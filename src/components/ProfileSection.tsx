@@ -31,8 +31,8 @@ export default function ProfileSection({ user, onSignOut }: ProfileSectionProps)
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-2">
-          <Link href="/trips" className="flex-1">
+        <div className="flex flex-col gap-2">
+          <Link href="/trips" className="w-full">
             <Button
               variant="default"
               className="w-full"
@@ -40,10 +40,18 @@ export default function ProfileSection({ user, onSignOut }: ProfileSectionProps)
               View My Trips
             </Button>
           </Link>
+          <Link href="/profile" className="w-full">
+            <Button
+              variant="secondary"
+              className="w-full"
+            >
+              Edit Profile
+            </Button>
+          </Link>
           <Button
             onClick={onSignOut}
             variant="destructive"
-            className="flex-1"
+            className="w-full"
           >
             Sign out
           </Button>

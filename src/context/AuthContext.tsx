@@ -5,12 +5,11 @@ import {
   GoogleAuthProvider, 
   signInWithPopup, 
   signOut as firebaseSignOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  User
 } from 'firebase/auth';
-import { auth } from '@/lib/firebaseConfig';
-import { User } from '@/types/userTypes';
-import { doc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebaseConfig';
+import { auth, db } from '@/lib/firebaseConfig';
+import { createOrUpdateUser } from '@/lib/user';
 
 interface AuthContextType {
   user: User | null;
@@ -26,28 +25,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        // Get or create user document
-        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-        
-        if (!userDoc.exists()) {
-          // Create new user document
-          const newUser: User = {
-            uid: firebaseUser.uid,
-            displayName: firebaseUser.displayName || '',
-            email: firebaseUser.email || '',
-            photoURL: firebaseUser.photoURL || '',
-            createdAt: Timestamp.now(),
-          };
-          await setDoc(doc(db, 'users', firebaseUser.uid), newUser);
-          setUser(newUser);
-        } else {
-          setUser(userDoc.data() as User);
-        }
-      } else {
-        setUser(null);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Create or update user document in Firestore
+        await createOrUpdateUser(user.uid, {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        });
       }
+      setUser(user);
       setLoading(false);
     });
 
