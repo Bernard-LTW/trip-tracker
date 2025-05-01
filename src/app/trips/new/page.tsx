@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { tripService } from '@/services/tripService';
 import { Trip } from '@/types/tripTypes';
+import { Timestamp } from 'firebase/firestore';
+import { Button } from '@/components/ui/button';
 
 export default function NewTripPage() {
   const router = useRouter();
@@ -31,7 +33,7 @@ export default function NewTripPage() {
       const newTrip: Omit<Trip, 'id'> = {
         ...formData,
         userId: user.uid,
-        createdAt: new Date(),
+        createdAt: Timestamp.now(),
       };
 
       await tripService.createTrip(newTrip);
@@ -143,20 +145,20 @@ export default function NewTripPage() {
         )}
 
         <div className="flex gap-4">
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+            className="flex-1"
           >
             {loading ? 'Creating...' : 'Create Trip'}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="outline"
             onClick={() => router.back()}
-            className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Cancel
-          </button>
+          </Button>
         </div>
       </form>
     </div>
