@@ -1,6 +1,19 @@
+'use client';
+
 import Image from "next/image";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Home() {
+  const { user, loading, signInWithGoogle, signOut } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
@@ -50,6 +63,48 @@ export default function Home() {
             Read our docs
           </a>
         </div>
+
+        {!user ? (
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-lg text-center">Sign in to start tracking your travels</p>
+            <button
+              onClick={signInWithGoogle}
+              className="flex items-center gap-2 px-6 py-3 bg-white text-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+            >
+              <Image
+                src="/google.svg"
+                alt="Google logo"
+                width={24}
+                height={24}
+              />
+              Sign in with Google
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex items-center gap-4">
+              {user.photoURL && (
+                <Image
+                  src={user.photoURL}
+                  alt={user.displayName}
+                  width={48}
+                  height={48}
+                  className="rounded-full"
+                />
+              )}
+              <div>
+                <h2 className="text-xl font-semibold">Welcome, {user.displayName}!</h2>
+                <p className="text-gray-600">{user.email}</p>
+              </div>
+            </div>
+            <button
+              onClick={signOut}
+              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              Sign out
+            </button>
+          </div>
+        )}
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
