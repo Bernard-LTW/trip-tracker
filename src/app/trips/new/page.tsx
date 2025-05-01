@@ -7,6 +7,12 @@ import { tripService } from '@/services/tripService';
 import { Trip } from '@/types/tripTypes';
 import { Timestamp } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { ArrowLeftIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function NewTripPage() {
   const router = useRouter();
@@ -37,9 +43,11 @@ export default function NewTripPage() {
       };
 
       await tripService.createTrip(newTrip);
-      router.push('/trips'); // Redirect to trips list
+      toast.success('Trip created successfully');
+      router.push('/trips');
     } catch (err) {
       setError('Failed to create trip');
+      toast.error('Failed to create trip');
       console.error(err);
     } finally {
       setLoading(false);
@@ -52,115 +60,117 @@ export default function NewTripPage() {
   };
 
   if (!user) {
-    return <div>Please sign in to create a trip</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg">Please sign in to create a trip</p>
+      </div>
+    );
   }
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Create New Trip</h1>
+      <Button
+        variant="ghost"
+        className="mb-6 gap-2"
+        onClick={() => router.back()}
+      >
+        <ArrowLeftIcon className="h-4 w-4" />
+        Back
+      </Button>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-            Trip Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            required
-            value={formData.title}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="e.g., Summer Vacation in Italy"
-          />
-        </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Create New Trip</CardTitle>
+          <CardDescription>Fill in the details of your upcoming trip</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="title">Trip Title</Label>
+              <Input
+                id="title"
+                name="title"
+                required
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="e.g., Summer Vacation in Italy"
+              />
+            </div>
 
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            required
-            value={formData.description}
-            onChange={handleChange}
-            rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Describe your trip plans..."
-          />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                name="description"
+                required
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Describe your trip plans..."
+                className="min-h-[100px]"
+              />
+            </div>
 
-        <div>
-          <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-            Country
-          </label>
-          <input
-            type="text"
-            id="country"
-            name="country"
-            required
-            value={formData.country}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="e.g., Italy"
-          />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="country">Country</Label>
+              <Input
+                id="country"
+                name="country"
+                required
+                value={formData.country}
+                onChange={handleChange}
+                placeholder="e.g., Italy"
+              />
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
-              Start Date
-            </label>
-            <input
-              type="date"
-              id="startDate"
-              name="startDate"
-              required
-              value={formData.startDate}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="startDate">Start Date</Label>
+                <Input
+                  id="startDate"
+                  name="startDate"
+                  type="date"
+                  required
+                  value={formData.startDate}
+                  onChange={handleChange}
+                />
+              </div>
 
-          <div>
-            <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
-              End Date
-            </label>
-            <input
-              type="date"
-              id="endDate"
-              name="endDate"
-              required
-              value={formData.endDate}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
+              <div className="space-y-2">
+                <Label htmlFor="endDate">End Date</Label>
+                <Input
+                  id="endDate"
+                  name="endDate"
+                  type="date"
+                  required
+                  value={formData.endDate}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
 
-        {error && (
-          <div className="text-red-600 text-sm">{error}</div>
-        )}
+            {error && (
+              <div className="text-sm text-red-600">{error}</div>
+            )}
 
-        <div className="flex gap-4">
-          <Button
-            type="submit"
-            disabled={loading}
-            className="flex-1"
-          >
-            {loading ? 'Creating...' : 'Create Trip'}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.back()}
-          >
-            Cancel
-          </Button>
-        </div>
-      </form>
+            <div className="flex gap-4">
+              <Button
+                type="submit"
+                className="flex-1"
+                disabled={loading}
+              >
+                {loading ? 'Creating...' : 'Create Trip'}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 } 
