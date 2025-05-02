@@ -7,6 +7,7 @@ import DaysStats from "./daysStats";
 import UpcomingTrips from "./upcomingTrips";
 import ProgressBar from "./progressBar";
 import { Plus } from "lucide-react";
+import { ProfileSkeleton } from "./skeletons/ProfileSkeleton";
 
 interface ProfileSectionProps {
   user: {
@@ -14,9 +15,14 @@ interface ProfileSectionProps {
     email: string | null;
     photoURL: string | null;
   };
+  isLoading?: boolean;
 }
 
-export default function ProfileSection({ user }: ProfileSectionProps) {
+export default function ProfileSection({ user, isLoading = false }: ProfileSectionProps) {
+  if (isLoading) {
+    return <ProfileSkeleton />;
+  }
+
   return (
     <Card className="w-[min(600px,100vw)] border-none shadow-none">
       <CardHeader className="flex flex-row items-center gap-3 py-2">

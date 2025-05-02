@@ -6,17 +6,20 @@ import { Card, CardContent } from '@/components/ui/card';
 import { MapPinIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from "@/lib/utils";
+import { CheckIfOnTripSkeleton } from "./skeletons/CheckIfOnTripSkeleton";
 
 export default function CheckIfOnTrip() {
     const { user } = useAuth();
     const [isOnTrip, setIsOnTrip] = useState(false);
     const [currentTrip, setCurrentTrip] = useState<Trip | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         async function checkTripStatus() {
             if (!user) return;
 
             try {
+                setIsLoading(true);
                 const trips = await tripService.getUserTrips(user.uid);
                 const now = new Date();
                 const activeTrip = trips.find(trip => {
@@ -29,6 +32,8 @@ export default function CheckIfOnTrip() {
                 setCurrentTrip(activeTrip || null);
             } catch (error) {
                 console.error('Error checking trip status:', error);
+            } finally {
+                setIsLoading(false);
             }
         }
 
@@ -36,6 +41,7 @@ export default function CheckIfOnTrip() {
     }, [user]);
 
     if (!user) return null;
+    if (isLoading) return <CheckIfOnTripSkeleton />;
 
     return (
         <Card className={cn(

@@ -11,11 +11,13 @@ import { useEffect, useState } from "react";
 import { userService } from "@/services/userService";
 import { format } from "date-fns";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import ProfileSection from '@/components/ProfileSection';
 
 export default function ProfilePage() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
   const router = useRouter();
   const [entryDate, setEntryDate] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function loadEntryDate() {
@@ -29,6 +31,16 @@ export default function ProfilePage() {
     }
     loadEntryDate();
   }, [user]);
+
+  useEffect(() => {
+    if (!loading) {
+      // Add a small delay to prevent flash of loading state
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -51,6 +63,8 @@ export default function ProfilePage() {
           Back to Home
         </Link>
         
+        <ProfileSection user={user} isLoading={isLoading} />
+
         <Card className="border-none shadow-none">
           <CardHeader className="flex flex-row items-center gap-4">
             {user.photoURL && (
