@@ -8,7 +8,7 @@ export default function DaysStats() {
     const { user } = useAuth();
     const [daysInUK, setDaysInUK] = useState(0);
     const [daysAbroad, setDaysAbroad] = useState(0);
-    const [arrivalDate, setArrivalDate] = useState<string>("");
+    // const [arrivalDate, setArrivalDate] = useState<string>("");
 
     useEffect(() => {
         async function updateStats() {
@@ -19,7 +19,7 @@ export default function DaysStats() {
                 const date = await userService.getArrivalDate(user.uid);
                 setDaysInUK(Math.round(ukDays));
                 setDaysAbroad(Math.round(abroadDays));
-                setArrivalDate(date.toISOString().split('T')[0]);
+                // setArrivalDate(date.toISOString().split('T')[0]);
             } catch (error) {
                 console.error('Error fetching days stats:', error);
             }
