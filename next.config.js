@@ -13,7 +13,7 @@ const nextConfig = {
         pathname: "/a/**",
       },
     ],
-  },
+  }
 };
 
 module.exports = withPWA(nextConfig);

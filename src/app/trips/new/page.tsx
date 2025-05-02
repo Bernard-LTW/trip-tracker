@@ -13,6 +13,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeftIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import { DatePicker } from '@/components/ui/date-picker';
+import { EmojiPicker } from '@/components/ui/emoji-picker';
 
 export default function NewTripPage() {
   const router = useRouter();
@@ -26,6 +28,7 @@ export default function NewTripPage() {
     country: '',
     startDate: '',
     endDate: '',
+    emoji: ''
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -87,14 +90,23 @@ export default function NewTripPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="title">Trip Title</Label>
-              <Input
-                id="title"
-                name="title"
-                required
-                value={formData.title}
-                onChange={handleChange}
-                placeholder="e.g., Summer Vacation in Italy"
-              />
+              <div className="flex gap-4">
+                <Input
+                  id="title"
+                  name="title"
+                  required
+                  value={formData.title}
+                  onChange={handleChange}
+                  placeholder="e.g., Summer Vacation in Italy"
+                  className="flex-1"
+                />
+                <div className="w-[150px]">
+                  <EmojiPicker
+                    emoji={formData.emoji}
+                    onSelect={(emoji) => setFormData(prev => ({ ...prev, emoji }))}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -124,26 +136,24 @@ export default function NewTripPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="startDate">Start Date</Label>
-                <Input
-                  id="startDate"
-                  name="startDate"
-                  type="date"
-                  required
-                  value={formData.startDate}
-                  onChange={handleChange}
+                <Label>Start Date</Label>
+                <DatePicker
+                  date={formData.startDate ? new Date(formData.startDate) : undefined}
+                  onSelect={(date) => setFormData(prev => ({ 
+                    ...prev, 
+                    startDate: date ? date.toISOString() : '' 
+                  }))}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="endDate">End Date</Label>
-                <Input
-                  id="endDate"
-                  name="endDate"
-                  type="date"
-                  required
-                  value={formData.endDate}
-                  onChange={handleChange}
+                <Label>End Date</Label>
+                <DatePicker
+                  date={formData.endDate ? new Date(formData.endDate) : undefined}
+                  onSelect={(date) => setFormData(prev => ({ 
+                    ...prev, 
+                    endDate: date ? date.toISOString() : '' 
+                  }))}
                 />
               </div>
             </div>
@@ -156,7 +166,7 @@ export default function NewTripPage() {
               <Button
                 type="submit"
                 className="flex-1"
-                disabled={loading}
+                disabled={loading || !formData.startDate || !formData.endDate}
               >
                 {loading ? 'Creating...' : 'Create Trip'}
               </Button>

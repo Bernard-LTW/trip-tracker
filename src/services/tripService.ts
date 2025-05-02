@@ -72,5 +72,21 @@ export const tripService = {
       console.error('Error deleting trip:', error);
       throw error;
     }
+  },
+
+  async getUpcomingTrips(userId: string): Promise<Trip[]> {
+    try {
+      const tripsQuery = query(
+        collection(db, 'trips'),
+        where('userId', '==', userId),
+        where('startDate', '>=', new Date().toISOString()),
+        orderBy('startDate', 'asc')
+      );
+      const snapshot = await getDocs(tripsQuery);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Trip));
+    } catch (error) {
+      console.error('Error fetching upcoming trips:', error);
+      throw error;
+    }
   }
 }; 

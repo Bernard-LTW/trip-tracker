@@ -79,7 +79,7 @@ export default function TripsPage() {
             <p className="text-muted-foreground">No trips found. Start planning your next adventure!</p>
             <Button onClick={() => router.push('/trips/new')} className="gap-2">
               <PlusIcon className="h-4 w-4" />
-              Create Your First Trip
+            Create Your First Trip
             </Button>
           </CardContent>
         </Card>
@@ -88,7 +88,10 @@ export default function TripsPage() {
           {trips.map((trip) => (
             <Card key={trip.id} className="hover:shadow-lg transition-shadow">
               <CardHeader>
-                <CardTitle className="line-clamp-1">{trip.title}</CardTitle>
+                <CardTitle className="line-clamp-1 flex items-center gap-2">
+                  {trip.emoji && <span className="text-xl">{trip.emoji}</span>}
+                  {trip.title}
+                </CardTitle>
                 <CardDescription className="line-clamp-2">{trip.description}</CardDescription>
               </CardHeader>
               <CardContent>

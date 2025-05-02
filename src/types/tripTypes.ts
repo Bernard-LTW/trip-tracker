@@ -9,4 +9,5 @@ export interface Trip {
   startDate: string;  // ISO date string format (YYYY-MM-DD)
   endDate: string;    // ISO date string format (YYYY-MM-DD)
   createdAt: Timestamp;
+  emoji:string;
 }
