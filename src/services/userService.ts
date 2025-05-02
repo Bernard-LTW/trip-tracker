@@ -12,12 +12,27 @@ export const userService = {
   async getUser(userId: string): Promise<User> {
     const userRef = doc(collection(db, 'users'), userId);
     const userDoc = await getDoc(userRef);
+    if (!userDoc.exists()) {
+      throw new Error('User not found');
+    }
     return userDoc.data() as User;
   },
 
-  async getArrivalDate(userId: string): Promise<Date> {
-    const user = await this.getUser(userId);
-    return new Date(user.prInfo.firstEntryToUK);
+  async getArrivalDate(userId: string): Promise<Date | null> {
+    try {
+      const user = await this.getUser(userId);
+      if (!user.prInfo?.firstEntryToUK) {
+        return null;
+      }
+      const date = new Date(user.prInfo.firstEntryToUK);
+      if (isNaN(date.getTime())) {
+        return null;
+      }
+      return date;
+    } catch (error) {
+      console.error('Error getting arrival date:', error);
+      return null;
+    }
   },
   // Get user by email
   async getCurrentTrip(userId: string): Promise<Trip | null> {
@@ -45,6 +60,9 @@ export const userService = {
       const totalDays = trips.reduce((acc, trip) => {
         const tripStartDate = new Date(trip.startDate);
         const tripEndDate = new Date(trip.endDate);
+        if (isNaN(tripStartDate.getTime()) || isNaN(tripEndDate.getTime())) {
+          return acc;
+        }
         const days = (tripEndDate.getTime() - tripStartDate.getTime()) / (1000 * 60 * 60 * 24);
         return acc + days;
       }, 0);
@@ -56,26 +74,34 @@ export const userService = {
   },
 
   async getDaysSinceArrival(userId: string): Promise<number> {
-
-    try{
-    const user = await this.getUser(userId);
-    const arrivalDate = new Date(user.prInfo.firstEntryToUK);
-    const currentDate = new Date();
-    const daysSinceArrival = (currentDate.getTime() - arrivalDate.getTime()) / (1000 * 60 * 60 * 24);
-    return Math.floor(daysSinceArrival);
+    try {
+      const arrivalDate = await this.getArrivalDate(userId);
+      if (!arrivalDate) {
+        return 0;
+      }
+      const currentDate = new Date();
+      const daysSinceArrival = (currentDate.getTime() - arrivalDate.getTime()) / (1000 * 60 * 60 * 24);
+      return Math.floor(daysSinceArrival);
     } catch (error) {
       console.error('Error getting days in UK since arrival:', error);
-      throw error;
+      return 0;
     }
   },
 
   async getDaysSinceArrivalinUK(userId: string): Promise<number> {
-    const user = await this.getUser(userId);
-    const arrivalDate = new Date(user.prInfo.firstEntryToUK);
-    const currentDate = new Date();
-    const totalDaysOnTrip = await this.getTotalDaysOnTrip(userId);
-    const daysSinceArrival = (currentDate.getTime() - arrivalDate.getTime()) / (1000 * 60 * 60 * 24)-totalDaysOnTrip;
-    return daysSinceArrival;
+    try {
+      const arrivalDate = await this.getArrivalDate(userId);
+      if (!arrivalDate) {
+        return 0;
+      }
+      const currentDate = new Date();
+      const totalDaysOnTrip = await this.getTotalDaysOnTrip(userId);
+      const daysSinceArrival = (currentDate.getTime() - arrivalDate.getTime()) / (1000 * 60 * 60 * 24) - totalDaysOnTrip;
+      return Math.floor(daysSinceArrival);
+    } catch (error) {
+      console.error('Error getting days in UK since arrival:', error);
+      return 0;
+    }
   }
   
 };
