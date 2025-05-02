@@ -16,7 +16,7 @@ export default function DaysStats() {
             try {
                 const ukDays = await userService.getDaysSinceArrivalinUK(user.uid);
                 const abroadDays = await userService.getTotalDaysOnTrip(user.uid);
-                const date = await userService.getArrivalDate(user.uid);
+                // const date = await userService.getArrivalDate(user.uid);
                 setDaysInUK(Math.round(ukDays));
                 setDaysAbroad(Math.round(abroadDays));
                 // setArrivalDate(date.toISOString().split('T')[0]);
