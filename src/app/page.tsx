@@ -16,8 +16,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8">
-      <main className="flex flex-col items-center gap-8">
+    <div className="min-h-screen flex items-start justify-center p-8">
+      <main className="flex flex-col items-center gap-8 pt-4">
         {!user ? (
           <SignInSection onSignIn={signInWithGoogle} />
         ) : (

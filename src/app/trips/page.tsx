@@ -86,7 +86,8 @@ export default function TripsPage() {
             <PencilIcon className="h-4 w-4" />
           </Button>
         </div>
-        <CardDescription className="line-clamp-2">{trip.description}</CardDescription>
+        
+        <CardDescription className="line-clamp-2 italic">{trip.description ? trip.description : 'No description'}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-2 text-sm text-muted-foreground">
@@ -160,7 +161,7 @@ export default function TripsPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-7xl">
+    <div className="container mx-auto p-4 max-w-7xl pt-8">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold">Your Trips</h1>
@@ -176,10 +177,10 @@ export default function TripsPage() {
         <Card className="text-center py-12">
           <CardContent className="flex flex-col items-center gap-4">
             <p className="text-muted-foreground">No trips found. Start planning your next adventure!</p>
-            <Button onClick={() => router.push('/trips/new')} className="gap-2">
+            {/* <Button onClick={() => router.push('/trips/new')} className="gap-2">
               <PlusIcon className="h-4 w-4" />
               Create Your First Trip
-            </Button>
+            </Button> */}
           </CardContent>
         </Card>
       ) : (

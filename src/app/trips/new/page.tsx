@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeftIcon } from 'lucide-react';
+import { ArrowLeftIcon, PlusIcon, XIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { EmojiPicker } from '@/components/ui/emoji-picker';
 import { isBefore } from 'date-fns';
@@ -24,6 +24,7 @@ export default function NewTripPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [firstEntryDate, setFirstEntryDate] = useState<Date | null>(null);
+  const [showDescription, setShowDescription] = useState(false);
 
   const [formData, setFormData] = useState<Omit<Trip, 'id' | 'userId' | 'createdAt'>>({
     title: '',
@@ -113,7 +114,7 @@ export default function NewTripPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="title">Trip Title</Label>
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <Input
                   id="title"
                   name="title"
@@ -123,7 +124,7 @@ export default function NewTripPage() {
                   placeholder="e.g., Summer Vacation in Italy"
                   className="flex-1"
                 />
-                <div className="w-[150px]">
+                <div className="w-full sm:w-[150px]">
                   <EmojiPicker
                     emoji={formData.emoji}
                     onSelect={(emoji) => setFormData(prev => ({ ...prev, emoji }))}
@@ -132,18 +133,41 @@ export default function NewTripPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                name="description"
-                required
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Describe your trip plans..."
-                className="min-h-[100px]"
-              />
-            </div>
+            {showDescription ? (
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="description">Description</Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowDescription(false)}
+                    className="h-8 px-2"
+                  >
+                    <XIcon className="h-4 w-4 mr-1" />
+                    Remove
+                  </Button>
+                </div>
+                <Textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Describe your trip plans..."
+                  className="min-h-[100px]"
+                />
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowDescription(true)}
+                className="w-full"
+              >
+                <PlusIcon className="h-4 w-4 mr-2" />
+                Add Description
+              </Button>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="country">Country</Label>
@@ -205,13 +229,13 @@ export default function NewTripPage() {
               >
                 {loading ? 'Creating...' : 'Create Trip'}
               </Button>
-              <Button
+              {/* <Button
                 type="button"
                 variant="outline"
                 onClick={() => router.back()}
               >
                 Cancel
-              </Button>
+              </Button> */}
             </div>
           </form>
         </CardContent>

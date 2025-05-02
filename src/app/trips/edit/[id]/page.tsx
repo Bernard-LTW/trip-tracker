@@ -11,12 +11,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeftIcon } from 'lucide-react';
+import { ArrowLeftIcon, Trash2Icon, PlusIcon, XIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { EmojiPicker } from '@/components/ui/emoji-picker';
 import { use } from 'react';
 import { isBefore } from 'date-fns';
 import { ValidatedDatePicker } from '@/components/validated-date-picker';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function EditTripPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -24,8 +35,10 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [firstEntryDate, setFirstEntryDate] = useState<Date | null>(null);
+  const [showDescription, setShowDescription] = useState(false);
 
   const [formData, setFormData] = useState<Omit<Trip, 'id' | 'userId' | 'createdAt'>>({
     title: '',
@@ -62,6 +75,7 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
           endDate: trip.endDate,
           emoji: trip.emoji
         });
+        setShowDescription(!!trip.description);
       } catch (err) {
         setError('Failed to load trip');
         toast.error('Failed to load trip');
@@ -105,6 +119,21 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleDelete = async () => {
+    try {
+      setDeleting(true);
+      await tripService.deleteTrip(id);
+      toast.success('Trip deleted successfully');
+      router.push('/trips');
+    } catch (err) {
+      setError('Failed to delete trip');
+      toast.error('Failed to delete trip');
+      console.error(err);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -122,26 +151,26 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-2xl">
+    <div className="container mx-auto px-2 sm:px-4 max-w-2xl w-full">
       <Button
         variant="ghost"
-        className="mb-6 gap-2"
+        className="mb-4 sm:mb-6 gap-2"
         onClick={() => router.back()}
       >
         <ArrowLeftIcon className="h-4 w-4" />
         Back
       </Button>
 
-      <Card>
-        <CardHeader>
+      <Card className="w-full">
+        <CardHeader className="px-4 sm:px-6">
           <CardTitle>Edit Trip</CardTitle>
           <CardDescription>Update your trip details</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="title">Trip Title</Label>
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <Input
                   id="title"
                   name="title"
@@ -151,7 +180,7 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
                   placeholder="e.g., Summer Vacation in Italy"
                   className="flex-1"
                 />
-                <div className="w-[150px]">
+                <div className="w-full sm:w-[150px]">
                   <EmojiPicker
                     emoji={formData.emoji}
                     onSelect={(emoji) => setFormData(prev => ({ ...prev, emoji }))}
@@ -160,18 +189,44 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                name="description"
-                required
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Describe your trip plans..."
-                className="min-h-[100px]"
-              />
-            </div>
+            {showDescription ? (
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="description">Description</Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setShowDescription(false);
+                      setFormData(prev => ({ ...prev, description: '' }));
+                    }}
+                    className="h-8 px-2"
+                  >
+                    <XIcon className="h-4 w-4 mr-1" />
+                    Remove
+                  </Button>
+                </div>
+                <Textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Describe your trip plans..."
+                  className="min-h-[100px]"
+                />
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowDescription(true)}
+                className="w-full"
+              >
+                <PlusIcon className="h-4 w-4 mr-2" />
+                Add Description
+              </Button>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="country">Country</Label>
@@ -233,13 +288,37 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
               >
                 {saving ? 'Saving...' : 'Save Changes'}
               </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.back()}
-              >
-                Cancel
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    disabled={deleting}
+                    className="gap-2"
+                  >
+                    <Trash2Icon className="h-4 w-4" />
+                    {deleting ? 'Deleting...' : 'Delete'}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete your trip
+                      and remove it from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDelete}
+                      className="bg-destructive text-white hover:bg-destructive/90"
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </form>
         </CardContent>
