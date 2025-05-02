@@ -48,8 +48,8 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="h-full p-8 overflow-y-auto">
-      <div className="max-w-[min(450px,100vw)] mx-auto space-y-4">
+    <div className="h-full p-4 sm:p-8 overflow-y-auto">
+      <div className="w-full max-w-[min(600px,calc(100vw-2rem))] mx-auto space-y-4">
         <Link href="/profile" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Profile

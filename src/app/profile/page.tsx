@@ -7,10 +7,27 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { userService } from "@/services/userService";
+import { format } from "date-fns";
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth();
   const router = useRouter();
+  const [entryDate, setEntryDate] = useState<Date | null>(null);
+
+  useEffect(() => {
+    async function loadEntryDate() {
+      if (!user) return;
+      try {
+        const date = await userService.getArrivalDate(user.uid);
+        setEntryDate(date);
+      } catch (error) {
+        console.error('Error loading entry date:', error);
+      }
+    }
+    loadEntryDate();
+  }, [user]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -26,8 +43,8 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="h-full p-8 overflow-y-auto">
-      <div className="max-w-[450px] mx-auto space-y-4">
+    <div className="h-full p-4 sm:p-8 overflow-y-auto">
+      <div className="w-full max-w-[min(600px,calc(100vw-2rem))] mx-auto space-y-4">
         <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Home
@@ -78,6 +95,12 @@ export default function ProfilePage() {
               >
                 Sign out
               </Button>
+
+              {entryDate && (
+                <p className="text-sm text-muted-foreground text-center mt-4 italic">
+                  Been in the UK since {format(entryDate, 'MMMM d, yyyy')}
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>

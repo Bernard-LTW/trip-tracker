@@ -60,7 +60,7 @@ export default function DaysStats() {
                     </CardContent>
                 </Card>
             </div>
-            <p className="text-sm text-muted-foreground italic text-center">since {arrivalDate}</p>
+            {/* <p className="text-sm text-muted-foreground italic text-center">since {arrivalDate}</p> */}
         </div>
     );
 }
