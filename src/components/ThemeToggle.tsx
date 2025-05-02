@@ -4,42 +4,48 @@ import { Moon, Sun, Monitor } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
 
-export function ThemeToggle() {
+export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="flex items-center gap-1 p-1 rounded-lg border bg-background w-full">
+    <div className="w-full flex items-center justify-between rounded-lg border bg-card p-1">
       <button
         onClick={() => setTheme("light")}
         className={cn(
-          "relative flex flex-col items-center justify-center flex-1 h-12 rounded-md transition-colors",
-          theme === "light" ? "bg-accent text-primary" : "text-muted-foreground hover:text-foreground"
+          "flex-1 flex flex-col items-center justify-center py-2 px-3 rounded-md transition-colors",
+          theme === "light" 
+            ? "bg-accent text-accent-foreground" 
+            : "text-muted-foreground hover:text-foreground"
         )}
       >
-        <Sun className="h-4 w-4 mb-1" />
-        <span className="text-xs">Light</span>
+        <Sun className="h-5 w-5" />
+        <span className="text-xs mt-1">Light</span>
       </button>
-      <div className="w-px h-8 bg-border" />
+      <div className="h-8 w-px bg-border" />
       <button
         onClick={() => setTheme("dark")}
         className={cn(
-          "relative flex flex-col items-center justify-center flex-1 h-12 rounded-md transition-colors",
-          theme === "dark" ? "bg-accent text-primary" : "text-muted-foreground hover:text-foreground"
+          "flex-1 flex flex-col items-center justify-center py-2 px-3 rounded-md transition-colors",
+          theme === "dark" 
+            ? "bg-accent text-accent-foreground" 
+            : "text-muted-foreground hover:text-foreground"
         )}
       >
-        <Moon className="h-4 w-4 mb-1" />
-        <span className="text-xs">Dark</span>
+        <Moon className="h-5 w-5" />
+        <span className="text-xs mt-1">Dark</span>
       </button>
-      <div className="w-px h-8 bg-border" />
+      <div className="h-8 w-px bg-border" />
       <button
         onClick={() => setTheme("system")}
         className={cn(
-          "relative flex flex-col items-center justify-center flex-1 h-12 rounded-md transition-colors",
-          theme === "system" ? "bg-accent text-primary" : "text-muted-foreground hover:text-foreground"
+          "flex-1 flex flex-col items-center justify-center py-2 px-3 rounded-md transition-colors",
+          theme === "system" 
+            ? "bg-accent text-accent-foreground" 
+            : "text-muted-foreground hover:text-foreground"
         )}
       >
-        <Monitor className="h-4 w-4 mb-1" />
-        <span className="text-xs">System</span>
+        <Monitor className="h-5 w-5" />
+        <span className="text-xs mt-1">System</span>
       </button>
     </div>
   );

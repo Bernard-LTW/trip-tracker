@@ -21,7 +21,7 @@ export default function Home() {
         {!user ? (
           <SignInSection onSignIn={signInWithGoogle} />
         ) : (
-          <ProfileSection user={user} />
+          <ProfileSection user={user} isLoading={loading} />
         )}
       </main>
     </div>
