@@ -16,20 +16,24 @@ export default function ProfilePage() {
   const router = useRouter();
   const { user, signOut } = useAuth();
   const [entryDate, setEntryDate] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function loadEntryDate() {
       if (!user) return;
       try {
+        setIsLoading(true);
         const date = await userService.getArrivalDate(user.uid);
         setEntryDate(date);
       } catch (error) {
         console.error('Error loading entry date:', error);
+        setEntryDate(null);
+      } finally {
+        setIsLoading(false);
       }
     }
     loadEntryDate();
   }, [user]);
-
 
   const handleSignOut = async () => {
     await signOut();
@@ -105,7 +109,7 @@ export default function ProfilePage() {
                 Sign out
               </Button>
 
-              {entryDate && (
+              {!isLoading && entryDate && (
                 <p className="text-sm text-muted-foreground text-center mt-4 italic">
                   Been in the UK since {format(entryDate, 'MMMM d, yyyy')}
                 </p>
