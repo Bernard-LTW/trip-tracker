@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import CheckIfOnTrip from "./checkIfOnTrip";
+import DaysStats from "./daysStats";
 interface ProfileSectionProps {
   user: {
     displayName: string | null;
@@ -32,6 +33,7 @@ export default function ProfileSection({ user, onSignOut }: ProfileSectionProps)
       </CardHeader>
       <CardContent>
         <CheckIfOnTrip />
+        <DaysStats /> 
         <div className="flex flex-col gap-2">
           <Link href="/trips" className="w-full">
             <Button

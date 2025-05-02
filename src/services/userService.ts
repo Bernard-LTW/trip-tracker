@@ -64,13 +64,21 @@ export const userService = {
     const user = await this.getUser(userId);
     const arrivalDate = new Date(user.prInfo.firstEntryToUK);
     const currentDate = new Date();
+    const daysSinceArrival = (currentDate.getTime() - arrivalDate.getTime()) / (1000 * 60 * 60 * 24);
+    return daysSinceArrival;
+    } catch (error) {
+      console.error('Error getting days in UK since arrival:', error);
+      throw error;
+    }
+  },
+
+  async getDaysSinceArrivalinUK(userId: string): Promise<number> {
+    const user = await this.getUser(userId);
+    const arrivalDate = new Date(user.prInfo.firstEntryToUK);
+    const currentDate = new Date();
     const totalDaysOnTrip = await this.getTotalDaysOnTrip(userId);
     const daysSinceArrival = (currentDate.getTime() - arrivalDate.getTime()) / (1000 * 60 * 60 * 24)-totalDaysOnTrip;
     return daysSinceArrival;
-    } catch (error) {
-      console.error('Error getting days in UKsince arrival:', error);
-      throw error;
-    }
   }
   
 };
