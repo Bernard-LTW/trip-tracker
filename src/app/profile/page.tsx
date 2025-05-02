@@ -1,58 +1,87 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { getUserData, UserData } from '@/lib/user';
-import PRInfoForm from '@/components/PRInfoForm';
-import { Toaster } from 'sonner';
+import { useAuth } from "@/context/AuthContext";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
-  const { user } = useAuth();
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, signOut } = useAuth();
+  const router = useRouter();
 
-  useEffect(() => {
-    async function loadUserData() {
-      if (!user) return;
-      
-      try {
-        const data = await getUserData(user.uid);
-        setUserData(data);
-      } catch (error) {
-        console.error('Error loading user data:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadUserData();
-  }, [user]);
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/');
+  };
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="h-full flex items-center justify-center">
         <p className="text-lg">Please sign in to view your profile.</p>
       </div>
     );
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Profile Settings</h1>
-        {userData && (
-          <PRInfoForm initialData={userData.prInfo} />
-        )}
+    <div className="h-full p-8 overflow-y-auto">
+      <div className="max-w-[450px] mx-auto space-y-4">
+        <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Home
+        </Link>
+        
+        <Card className="border-none shadow-none">
+          <CardHeader className="flex flex-row items-center gap-4">
+            {user.photoURL && (
+              <Image
+                src={user.photoURL}
+                alt={user.displayName || 'User profile'}
+                width={64}
+                height={64}
+                className="rounded-full"
+              />
+            )}
+            <div>
+              <h1 className="text-2xl font-semibold">{user.displayName}</h1>
+              <p className="text-muted-foreground">{user.email}</p>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-lg font-medium">Account Details</h2>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Display Name</p>
+                <p className="font-medium">{user.displayName}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Email</p>
+                <p className="font-medium">{user.email}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 pt-4">
+              <Link href="/profile/edit" className="w-full">
+                <Button
+                  variant="secondary"
+                  className="w-full h-9"
+                >
+                  Edit Profile
+                </Button>
+              </Link>
+              <Button
+                onClick={handleSignOut}
+                variant="destructive"
+                className="w-full h-9"
+              >
+                Sign out
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <Toaster />
     </div>
   );
 } 

@@ -8,6 +8,7 @@ export default function DaysStats() {
     const { user } = useAuth();
     const [daysInUK, setDaysInUK] = useState(0);
     const [daysAbroad, setDaysAbroad] = useState(0);
+    const [arrivalDate, setArrivalDate] = useState<string>("");
 
     useEffect(() => {
         async function updateStats() {
@@ -15,8 +16,10 @@ export default function DaysStats() {
             try {
                 const ukDays = await userService.getDaysSinceArrivalinUK(user.uid);
                 const abroadDays = await userService.getTotalDaysOnTrip(user.uid);
+                const date = await userService.getArrivalDate(user.uid);
                 setDaysInUK(Math.round(ukDays));
                 setDaysAbroad(Math.round(abroadDays));
+                setArrivalDate(date.toISOString().split('T')[0]);
             } catch (error) {
                 console.error('Error fetching days stats:', error);
             }
@@ -27,34 +30,37 @@ export default function DaysStats() {
     if (!user) return null;
 
     return (
-        <div className="flex gap-4">
-            <Card className="flex-1">
-                <CardContent className="p-6">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-full bg-blue-100">
-                            <HomeIcon className="h-5 w-5 text-blue-600" />
+        <div className="space-y-1">
+            <div className="flex gap-2">
+                <Card className="flex-1 border-none shadow-none">
+                    <CardContent className="p-1">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-full bg-blue-100">
+                                <HomeIcon className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Days in UK</p>
+                                <p className="text-2xl font-bold">{daysInUK}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p className="text-sm text-muted-foreground">Days in UK</p>
-                            <p className="text-2xl font-bold">{daysInUK}</p>
+                    </CardContent>
+                </Card>
+                <div className="w-px h-full bg-black" />
+                <Card className="flex-1 border-none shadow-none">
+                    <CardContent className="p-1">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-full bg-purple-100">
+                                <PlaneIcon className="h-5 w-5 text-purple-600" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Days Abroad</p>
+                                <p className="text-2xl font-bold">{daysAbroad}</p>
+                            </div>
                         </div>
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card className="flex-1">
-                <CardContent className="p-6">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-full bg-purple-100">
-                            <PlaneIcon className="h-5 w-5 text-purple-600" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-muted-foreground">Days Abroad</p>
-                            <p className="text-2xl font-bold">{daysAbroad}</p>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
+            </div>
+            <p className="text-sm text-muted-foreground italic text-center">since {arrivalDate}</p>
         </div>
     );
 }

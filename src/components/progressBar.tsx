@@ -7,22 +7,34 @@ import { userService } from "@/services/userService";
 export default function ProgressBar() {
     const { user } = useAuth();
     const [progress, setProgress] = useState(0);
+    const [daysSinceArrival, setDaysSinceArrival] = useState(0);
     const finishNumberOfDay = 2150;
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function updateProgress() {
             if (!user) return;
-            const daysSinceArrival = await userService.getDaysSinceArrival(user.uid);
-            const progress = (daysSinceArrival / finishNumberOfDay) * 100;
-            setProgress(progress);
+            const days = await userService.getDaysSinceArrival(user.uid);
+            setDaysSinceArrival(days);
+            const progress = (days / finishNumberOfDay) * 100;
+            setProgress(Math.min(progress, 100)); // Cap at 100%
         }
         updateProgress();
     }, [user]);
+
     return (
-        <Progress 
-            value={progress}
-            className="w-full"
-        />
+        <div className="space-y-2">
+            <div className="flex justify-between items-center text-sm">
+                <span className="text-muted-foreground">PR Progress</span>
+                <span className="font-medium">{Math.round(progress)}%</span>
+            </div>
+            <Progress 
+                value={progress}
+                className="h-2"
+            />
+            <p className="text-sm text-muted-foreground text-center">
+                {daysSinceArrival} days completed of {finishNumberOfDay} days required
+            </p>
+        </div>
     )
 }

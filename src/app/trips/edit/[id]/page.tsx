@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { tripService } from '@/services/tripService';
 import { userService } from '@/services/userService';
 import { Trip } from '@/types/tripTypes';
-import { Timestamp } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,13 +14,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeftIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { EmojiPicker } from '@/components/ui/emoji-picker';
+import { use } from 'react';
 import { isBefore } from 'date-fns';
 import { ValidatedDatePicker } from '@/components/validated-date-picker';
 
-export default function NewTripPage() {
+export default function EditTripPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [firstEntryDate, setFirstEntryDate] = useState<Date | null>(null);
 
@@ -35,18 +37,42 @@ export default function NewTripPage() {
   });
 
   useEffect(() => {
-    async function loadFirstEntryDate() {
+    async function loadData() {
       if (!user) return;
+      
       try {
-        const arrivalDate = await userService.getArrivalDate(user.uid);
+        setLoading(true);
+        const [trip, arrivalDate] = await Promise.all([
+          tripService.getTripById(id),
+          userService.getArrivalDate(user.uid)
+        ]);
+
+        if (!trip) {
+          toast.error('Trip not found');
+          router.push('/trips');
+          return;
+        }
+
         setFirstEntryDate(arrivalDate);
-      } catch (error) {
-        console.error('Error loading first entry date:', error);
-        toast.error('Failed to load first entry date');
+        setFormData({
+          title: trip.title,
+          description: trip.description,
+          country: trip.country,
+          startDate: trip.startDate,
+          endDate: trip.endDate,
+          emoji: trip.emoji
+        });
+      } catch (err) {
+        setError('Failed to load trip');
+        toast.error('Failed to load trip');
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
-    loadFirstEntryDate();
-  }, [user]);
+
+    loadData();
+  }, [user, id, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,24 +85,18 @@ export default function NewTripPage() {
     }
 
     try {
-      setLoading(true);
+      setSaving(true);
       setError(null);
 
-      const newTrip: Omit<Trip, 'id'> = {
-        ...formData,
-        userId: user.uid,
-        createdAt: Timestamp.now(),
-      };
-
-      await tripService.createTrip(newTrip);
-      toast.success('Trip created successfully');
+      await tripService.updateTrip(id, formData);
+      toast.success('Trip updated successfully');
       router.push('/trips');
     } catch (err) {
-      setError('Failed to create trip');
-      toast.error('Failed to create trip');
+      setError('Failed to update trip');
+      toast.error('Failed to update trip');
       console.error(err);
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -88,7 +108,15 @@ export default function NewTripPage() {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg">Please sign in to create a trip</p>
+        <p className="text-lg">Please sign in to edit trips</p>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     );
   }
@@ -106,8 +134,8 @@ export default function NewTripPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Create New Trip</CardTitle>
-          <CardDescription>Fill in the details of your upcoming trip</CardDescription>
+          <CardTitle>Edit Trip</CardTitle>
+          <CardDescription>Update your trip details</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -201,9 +229,9 @@ export default function NewTripPage() {
               <Button
                 type="submit"
                 className="flex-1"
-                disabled={loading || !formData.startDate || !formData.endDate}
+                disabled={saving || !formData.startDate || !formData.endDate}
               >
-                {loading ? 'Creating...' : 'Create Trip'}
+                {saving ? 'Saving...' : 'Save Changes'}
               </Button>
               <Button
                 type="button"

@@ -11,6 +11,8 @@ import {
 import { auth } from '@/lib/firebaseConfig';
 import { createOrUpdateUser } from '@/lib/user';
 
+const allowedEmails = ['bernard.010506@gmail.com']; // Add your allowed emails here
+
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -26,7 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
+      if (user && allowedEmails.includes(user.email || '')) {
         // Create or update user document in Firestore
         await createOrUpdateUser(user.uid, {
           uid: user.uid,
@@ -45,7 +47,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const email = result.user.email;
+      
+      if (!email || !allowedEmails.includes(email)) {
+        await firebaseSignOut(auth);
+        alert('Access denied. Your email is not authorized to use this application.');
+      }
     } catch (error) {
       console.error('Error signing in with Google:', error);
       throw error;
