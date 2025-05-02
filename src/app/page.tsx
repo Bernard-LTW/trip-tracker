@@ -5,7 +5,7 @@ import SignInSection from "@/components/SignInSection";
 import ProfileSection from "@/components/ProfileSection";
 
 export default function Home() {
-  const { user, loading, signInWithGoogle, signOut } = useAuth();
+  const { user, loading, signInWithGoogle } = useAuth();
 
   if (loading) {
     return (
@@ -21,7 +21,7 @@ export default function Home() {
         {!user ? (
           <SignInSection onSignIn={signInWithGoogle} />
         ) : (
-          <ProfileSection user={user} onSignOut={signOut} />
+          <ProfileSection user={user} />
         )}
       </main>
     </div>
