@@ -14,10 +14,9 @@ interface ProfileSectionProps {
     email: string | null;
     photoURL: string | null;
   };
-  onSignOut: () => void;
 }
 
-export default function ProfileSection({ user, onSignOut }: ProfileSectionProps) {
+export default function ProfileSection({ user }: ProfileSectionProps) {
   return (
     <Card className="w-[min(450px,100vw)] border-none shadow-none">
       <CardHeader className="flex flex-row items-center gap-3 py-4">

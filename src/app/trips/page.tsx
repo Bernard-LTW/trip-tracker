@@ -8,7 +8,7 @@ import { Trip } from '@/types/tripTypes';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CalendarIcon, MapPinIcon, PlusIcon, PencilIcon } from 'lucide-react';
-import { format, isWithinInterval, isAfter, isBefore, startOfMonth, endOfMonth } from 'date-fns';
+import { format, isWithinInterval, isAfter, isBefore } from 'date-fns';
 
 interface GroupedTrips {
   [key: string]: Trip[];

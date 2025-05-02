@@ -9,7 +9,7 @@ export default function ProgressBar() {
     const [progress, setProgress] = useState(0);
     const [daysSinceArrival, setDaysSinceArrival] = useState(0);
     const finishNumberOfDay = 2150;
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function updateProgress() {

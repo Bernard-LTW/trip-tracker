@@ -4,14 +4,7 @@ import { tripService } from './tripService';
 import { 
   collection, 
   doc, 
-  getDoc, 
-  getDocs, 
-  setDoc, 
-  updateDoc, 
-  deleteDoc,
-  query,
-  where,
-  orderBy
+  getDoc
 } from 'firebase/firestore';
 import { Trip } from '@/types/tripTypes';
 
@@ -49,7 +42,6 @@ export const userService = {
   async getTotalDaysOnTrip(userId: string): Promise<number> {
     try {
       const trips = await tripService.getUserTrips(userId);
-      const currentDate = new Date();
       const totalDays = trips.reduce((acc, trip) => {
         const tripStartDate = new Date(trip.startDate);
         const tripEndDate = new Date(trip.endDate);

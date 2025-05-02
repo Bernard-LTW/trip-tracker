@@ -11,8 +11,6 @@ import {
 import { auth } from '@/lib/firebaseConfig';
 import { createOrUpdateUser } from '@/lib/user';
 
-const allowedEmails = ['bernard.010506@gmail.com']; // Add your allowed emails here
-
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -26,16 +24,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const validateEmail = async (email: string): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/auth/validate-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+      
+      const data = await response.json();
+      return data.authorized;
+    } catch (error) {
+      console.error('Error validating email:', error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user && allowedEmails.includes(user.email || '')) {
-        // Create or update user document in Firestore
-        await createOrUpdateUser(user.uid, {
-          uid: user.uid,
-          displayName: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-        });
+      if (user) {
+        const isAuthorized = await validateEmail(user.email || '');
+        if (isAuthorized) {
+          // Create or update user document in Firestore
+          await createOrUpdateUser(user.uid, {
+            uid: user.uid,
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+          });
+        } else {
+          // If not authorized, sign out the user
+          await firebaseSignOut(auth);
+          setUser(null);
+          setLoading(false);
+          return;
+        }
       }
       setUser(user);
       setLoading(false);
@@ -50,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await signInWithPopup(auth, provider);
       const email = result.user.email;
       
-      if (!email || !allowedEmails.includes(email)) {
+      if (!email || !(await validateEmail(email))) {
         await firebaseSignOut(auth);
         alert('Access denied. Your email is not authorized to use this application.');
       }

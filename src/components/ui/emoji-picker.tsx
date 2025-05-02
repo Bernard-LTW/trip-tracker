@@ -4,7 +4,6 @@ import * as React from "react"
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { Smile } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,6 +11,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+
+interface EmojiMartEmoji {
+  native: string;
+  id: string;
+  name: string;
+  unified: string;
+}
 
 interface EmojiPickerProps {
   emoji: string
@@ -44,7 +50,7 @@ export function EmojiPicker({ emoji, onSelect, className }: EmojiPickerProps) {
       <PopoverContent className="w-auto p-0" align="start">
         <Picker
           data={data}
-          onEmojiSelect={(emoji: any) => onSelect(emoji.native)}
+          onEmojiSelect={(emoji: EmojiMartEmoji) => onSelect(emoji.native)}
           theme="light"
         />
       </PopoverContent>
