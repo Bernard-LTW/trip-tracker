@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import ClientLayout from "./ClientLayout";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <AuthProvider>
-          <ClientLayout>{children}</ClientLayout>
-        </AuthProvider>
+        <ThemeProvider defaultTheme="system" storageKey="trip-tracker-theme">
+          <AuthProvider>
+            <ClientLayout>{children}</ClientLayout>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

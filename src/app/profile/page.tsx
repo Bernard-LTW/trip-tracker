@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { userService } from "@/services/userService";
 import { format } from "date-fns";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth();
@@ -66,7 +67,7 @@ export default function ProfilePage() {
               <p className="text-muted-foreground">{user.email}</p>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-lg font-medium">Account Details</h2>
               <div className="space-y-1">
@@ -76,6 +77,13 @@ export default function ProfilePage() {
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Email</p>
                 <p className="font-medium">{user.email}</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h2 className="text-lg font-medium">App Options</h2>
+              <div className="w-full">
+                <ThemeToggle />
               </div>
             </div>
 

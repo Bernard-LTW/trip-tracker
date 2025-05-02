@@ -5,6 +5,7 @@ import { Trip } from "@/types/tripTypes";
 import { Card, CardContent } from '@/components/ui/card';
 import { MapPinIcon } from 'lucide-react';
 import { format } from 'date-fns';
+import { cn } from "@/lib/utils";
 
 export default function CheckIfOnTrip() {
     const { user } = useAuth();
@@ -37,18 +38,33 @@ export default function CheckIfOnTrip() {
     if (!user) return null;
 
     return (
-        <Card className={isOnTrip ? "bg-green-50 border-green-200" : "bg-gray-50 border-gray-200"}>
+        <Card className={cn(
+            "border",
+            isOnTrip ? "bg-green-500/10 dark:bg-green-500/20" : "bg-muted"
+        )}>
             <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-full ${isOnTrip ? "bg-green-100" : "bg-gray-100"}`}>
-                        <MapPinIcon className={`h-5 w-5 ${isOnTrip ? "text-green-600" : "text-gray-600"}`} />
+                    <div className={cn(
+                        "p-2 rounded-full",
+                        isOnTrip ? "bg-green-500/20 dark:bg-green-500/30" : "bg-muted-foreground/20"
+                    )}>
+                        <MapPinIcon className={cn(
+                            "h-5 w-5",
+                            isOnTrip ? "text-green-600 dark:text-green-400" : "text-muted-foreground"
+                        )} />
                     </div>
                     <div>
-                        <p className={`font-medium ${isOnTrip ? "text-green-800" : "text-gray-800"}`}>
+                        <p className={cn(
+                            "font-medium",
+                            isOnTrip ? "text-green-700 dark:text-green-300" : "text-foreground"
+                        )}>
                             {isOnTrip ? (
                                 <>
                                     Currently in {currentTrip?.emoji} {currentTrip?.country}
-                                    <span className="block text-sm text-green-600 mt-1">
+                                    <span className={cn(
+                                        "block text-sm mt-1",
+                                        "text-green-600 dark:text-green-400"
+                                    )}>
                                         Until {format(new Date(currentTrip!.endDate), 'MMM d, yyyy')}
                                     </span>
                                 </>

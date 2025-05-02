@@ -18,7 +18,7 @@ interface ProfileSectionProps {
 
 export default function ProfileSection({ user }: ProfileSectionProps) {
   return (
-    <Card className="w-[min(450px,100vw)] border-none shadow-none">
+    <Card className="w-[min(600px,100vw)] border-none shadow-none">
       <CardHeader className="flex flex-row items-center gap-3 py-2">
         {user.photoURL && (
           <Image
@@ -34,7 +34,11 @@ export default function ProfileSection({ user }: ProfileSectionProps) {
           {/* <p className="text-sm text-muted-foreground leading-tight">{user.email}</p> */}
         </div>
         <Link href="/trips/new">
-          <Button variant="default" size="icon" className="rounded-full bg-black hover:bg-black/90">
+          <Button 
+            variant="default" 
+            size="icon" 
+            className="rounded-full bg-primary hover:bg-primary/90"
+          >
             <Plus className="h-5 w-5" />
           </Button>
         </Link>
