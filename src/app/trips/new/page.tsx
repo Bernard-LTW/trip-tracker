@@ -13,11 +13,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeftIcon, PlusIcon, XIcon, AlertCircleIcon, CheckCircle2Icon } from 'lucide-react';
+import { ArrowLeftIcon, PlusIcon, XIcon, AlertCircleIcon, CheckCircle2Icon, CalendarIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { EmojiPicker } from '@/components/ui/emoji-picker';
 import { isBefore, addDays, format } from 'date-fns';
-import { ValidatedDatePicker } from '@/components/validated-date-picker';
+import { ValidatedDatePicker } from '@/components/ui/validated-date-picker';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function NewTripPage() {
@@ -281,6 +281,7 @@ export default function NewTripPage() {
                     ...prev, 
                     endDate: date ? date.toISOString() : '' 
                   }))}
+                  defaultMonth={formData.startDate ? new Date(formData.startDate) : undefined}
                   disabledDate={(date: Date) => {
                     if (!formData.startDate || !firstEntryDate) return false;
                     const startDate = new Date(formData.startDate);
@@ -290,45 +291,47 @@ export default function NewTripPage() {
               </div>
             </div>
 
-            {formData.startDate && formData.endDate && (
-              <Alert 
-                variant={residenceCheck.isValid ? "default" : "destructive"} 
-                className="mt-4"
-              >
-                {residenceCheck.isValid ? (
+            <Alert 
+              variant={!formData.startDate || !formData.endDate ? "default" : residenceCheck.isValid ? "default" : "destructive"} 
+              className="mt-4"
+            >
+              {!formData.startDate || !formData.endDate ? (
+                <>
+                  <CalendarIcon className="h-4 w-4" />
+                  <AlertDescription>
+                    Pick your trip dates and we'll tell you if they comply with your residence requirements.
+                  </AlertDescription>
+                </>
+              ) : residenceCheck.isValid ? (
+                <>
                   <CheckCircle2Icon className="h-4 w-4 text-green-500" />
-                ) : (
-                  <AlertCircleIcon className="h-4 w-4" />
-                )}
-                <AlertDescription>
-                  {residenceCheck.isValid ? (
-                    <>
-                      These dates comply with your residence requirements through the end of your qualifying period
-                      ({residenceCheck.qualifyingPeriodEnd && format(residenceCheck.qualifyingPeriodEnd, 'MMMM d, yyyy')}).
+                  <AlertDescription>
+                    These dates comply with your residence requirements through the end of your qualifying period
+                    ({residenceCheck.qualifyingPeriodEnd && format(residenceCheck.qualifyingPeriodEnd, 'MMMM d, yyyy')}).
 
-                      {residenceCheck.nextPossibleTrips && (
-                        <div className="mt-2 space-y-1">
-                          <p className="font-medium">Next possible short trips after this one:</p>
-                          {residenceCheck.nextPossibleTrips.sevenDayTrip && (
-                            <p>• 7-day trip possible from {format(residenceCheck.nextPossibleTrips.sevenDayTrip, 'MMMM d, yyyy')}</p>
-                          )}
-                          {residenceCheck.nextPossibleTrips.fourteenDayTrip && (
-                            <p>• 14-day trip possible from {format(residenceCheck.nextPossibleTrips.fourteenDayTrip, 'MMMM d, yyyy')}</p>
-                          )}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      This trip would exceed the maximum allowed absence in a rolling 12-month period during your qualifying period
-                      (ending {residenceCheck.qualifyingPeriodEnd && format(residenceCheck.qualifyingPeriodEnd, 'MMMM d, yyyy')}).
-                      {/* The next possible trip start date would be{' '}
-                      <strong>{format(residenceCheck.nextValidDate!, 'MMMM d, yyyy')}</strong> to maintain compliance. */}
-                    </>
-                  )}
-                </AlertDescription>
-              </Alert>
-            )}
+                    {residenceCheck.nextPossibleTrips && (
+                      <div className="mt-2 space-y-1">
+                        <p className="font-medium">Next possible short trips after this one:</p>
+                        {residenceCheck.nextPossibleTrips.sevenDayTrip && (
+                          <p>• 7-day trip possible from {format(residenceCheck.nextPossibleTrips.sevenDayTrip, 'MMMM d, yyyy')}</p>
+                        )}
+                        {residenceCheck.nextPossibleTrips.fourteenDayTrip && (
+                          <p>• 14-day trip possible from {format(residenceCheck.nextPossibleTrips.fourteenDayTrip, 'MMMM d, yyyy')}</p>
+                        )}
+                      </div>
+                    )}
+                  </AlertDescription>
+                </>
+              ) : (
+                <>
+                  <AlertCircleIcon className="h-4 w-4" />
+                  <AlertDescription>
+                    This trip would exceed the maximum allowed absence in a rolling 12-month period during your qualifying period
+                    (ending {residenceCheck.qualifyingPeriodEnd && format(residenceCheck.qualifyingPeriodEnd, 'MMMM d, yyyy')}).
+                  </AlertDescription>
+                </>
+              )}
+            </Alert>
 
             {error && (
               <div className="text-sm text-red-600">{error}</div>
