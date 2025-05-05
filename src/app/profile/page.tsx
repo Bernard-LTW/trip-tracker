@@ -51,10 +51,10 @@ export default function ProfilePage() {
   return (
     <div className="h-full p-4 sm:p-8 overflow-y-auto">
       <div className="w-full max-w-[min(600px,calc(100vw-2rem))] mx-auto space-y-4">
-        <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
+        {/* <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Home
-        </Link>
+        </Link> */}
       
         <Card className="border-none shadow-none">
           <CardHeader className="flex flex-row items-center gap-4">
@@ -73,7 +73,7 @@ export default function ProfilePage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <h2 className="text-lg font-medium">Account Details</h2>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Display Name</p>
@@ -83,7 +83,7 @@ export default function ProfilePage() {
                 <p className="text-sm text-muted-foreground">Email</p>
                 <p className="font-medium">{user.email}</p>
               </div>
-            </div>
+            </div> */}
 
             <div className="space-y-4">
               <h2 className="text-lg font-medium">App Options</h2>

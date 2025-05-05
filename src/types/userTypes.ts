@@ -1,10 +1,9 @@
 import { Timestamp } from 'firebase/firestore';
 
 export interface UserPRInfo {
+  visaApprovalDate: string; //ISO date string format (YYYY-MM-DD)
   firstEntryToUK: string; //ISO date string format (YYYY-MM-DD)
   visaType: string;
-  indefiniteLeaveDate: string | null;
-  notes: string;
 }
 
 export interface User {

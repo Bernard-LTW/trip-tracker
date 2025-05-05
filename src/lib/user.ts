@@ -1,23 +1,9 @@
 import { db } from './firebaseConfig';
 import { doc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
+import { User } from '@/types/userTypes';
 
-export interface UserPRInfo {
-  firstEntryToUK: string;
-  visaType: string;
-  indefiniteLeaveDate: string | null;
-  notes: string;
-}
 
-export interface UserData {
-  uid: string;
-  displayName: string | null;
-  email: string | null;
-  photoURL: string | null;
-  createdAt: Timestamp;
-  prInfo: UserPRInfo;
-}
-
-export async function createOrUpdateUser(userId: string, userData: Partial<UserData>) {
+export async function createOrUpdateUser(userId: string, userData: Partial<User>) {
   const userRef = doc(db, 'users', userId);
   
   try {
@@ -54,14 +40,14 @@ export async function createOrUpdateUser(userId: string, userData: Partial<UserD
   }
 }
 
-export async function getUserData(userId: string): Promise<UserData | null> {
+export async function getUserData(userId: string): Promise<User | null> {
   const userRef = doc(db, 'users', userId);
   
   try {
     const userDoc = await getDoc(userRef);
     
-    if (userDoc.exists()) {
-      return userDoc.data() as UserData;
+    if (userDoc.exists()) { 
+      return userDoc.data() as User;
     }
     
     return null;

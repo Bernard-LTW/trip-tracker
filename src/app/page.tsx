@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/context/AuthContext";
 import SignInSection from "@/components/SignInSection";
-import ProfileSection from "@/components/ProfileSection";
+import ProfileSection from "@/components/Dashboard";
 
 export default function Home() {
   const { user, loading, signInWithGoogle } = useAuth();

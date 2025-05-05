@@ -9,12 +9,11 @@ export default function ProgressBar() {
     const [progress, setProgress] = useState(0);
     const [daysSinceArrival, setDaysSinceArrival] = useState(0);
     const finishNumberOfDay = 2150;
-    // const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function updateProgress() {
             if (!user) return;
-            const days = await userService.getDaysSinceArrival(user.uid);
+            const days = await userService.getDaysSinceVisaApproval(user.uid);
             setDaysSinceArrival(days);
             const progress = (days / finishNumberOfDay) * 100;
             setProgress(Math.min(progress, 100)); // Cap at 100%

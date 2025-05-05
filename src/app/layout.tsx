@@ -5,13 +5,14 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
 import ClientLayout from "./ClientLayout";
 import { Analytics } from "@vercel/analytics/react"
+import { Toaster } from "sonner";
 
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Trip Tracker",
-  description: "Track your trips and stay compliant with UK tax rules",
+  description: "Track your trips and stay compliant with UK PR requirements",
 };
 
 export default function RootLayout({
@@ -30,6 +31,7 @@ export default function RootLayout({
           </ThemeProvider>
         </AuthProvider>
         <Analytics />
+        <Toaster />
       </body>
     </html>
   );

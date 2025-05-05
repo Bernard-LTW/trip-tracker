@@ -88,22 +88,86 @@ export const userService = {
     }
   },
 
-  async getDaysSinceArrivalinUK(userId: string): Promise<number> {
+  // async getDaysSinceArrivalinUK(userId: string): Promise<number> {
+  //   try {
+  //     const arrivalDate = await this.getArrivalDate(userId);
+  //     if (!arrivalDate) {
+  //       return 0;
+  //     }
+  //     const currentDate = new Date();
+  //     const totalDaysOnTrip = await this.getTotalDaysOnTrip(userId);
+  //     const daysSinceArrival = (currentDate.getTime() - arrivalDate.getTime()) / (1000 * 60 * 60 * 24) - totalDaysOnTrip;
+  //     return Math.floor(daysSinceArrival);
+  //   } catch (error) {
+  //     console.error('Error getting days in UK since arrival:', error);
+  //     return 0;
+  //   }
+  // },
+  
+  async getDaysSinceVisaApproval(userId: string): Promise<number> {
     try {
+      const user = await this.getUser(userId);
+      if (!user.prInfo?.visaApprovalDate) {
+        return 0;
+      }
+      const visaApprovalDate = new Date(user.prInfo.visaApprovalDate);
+      const currentDate = new Date();
+      const daysSinceVisaApproval = (currentDate.getTime() - visaApprovalDate.getTime()) / (1000 * 60 * 60 * 24);
+      return Math.floor(daysSinceVisaApproval);
+    } catch (error) {
+      console.error('Error getting days since visa approval:', error);
+      return 0;
+    }
+  },
+
+  async getDaysSinceVisaApprovalinUK(userId: string): Promise<number> {
+    try {
+      const user = await this.getUser(userId);
+      if (!user.prInfo?.visaApprovalDate) {
+        return 0;
+      }
+      const visaApprovalDate = new Date(user.prInfo.visaApprovalDate);
+      const currentDate = new Date();
+      const daysSinceVisaApproval = (currentDate.getTime() - visaApprovalDate.getTime()) / (1000 * 60 * 60 * 24);
+      const totalDaysOnTrip = await this.getTotalDaysOnTrip(userId);
+      const visaArrivalDelta = await this.getVisaArrivalDelta(userId);
+      return Math.floor(daysSinceVisaApproval-totalDaysOnTrip-visaArrivalDelta);
+    } catch (error) {
+      console.error('Error getting days since visa approval:', error);
+      return 0;
+    }
+  },
+
+  async getVisaArrivalDelta(userId: string): Promise<number> {
+    try {
+      const user = await this.getUser(userId);
+      if (!user.prInfo?.visaApprovalDate) {
+        return 0;
+      }
+      const visaApprovalDate = new Date(user.prInfo.visaApprovalDate);
       const arrivalDate = await this.getArrivalDate(userId);
       if (!arrivalDate) {
         return 0;
       }
-      const currentDate = new Date();
-      const totalDaysOnTrip = await this.getTotalDaysOnTrip(userId);
-      const daysSinceArrival = (currentDate.getTime() - arrivalDate.getTime()) / (1000 * 60 * 60 * 24) - totalDaysOnTrip;
-      return Math.floor(daysSinceArrival);
+      return Math.floor((arrivalDate.getTime() - visaApprovalDate.getTime()) / (1000 * 60 * 60 * 24));
     } catch (error) {
-      console.error('Error getting days in UK since arrival:', error);
+      console.error('Error getting visa arrival delta:', error);
+      return 0;
+    }
+  },
+
+  async getTotalnotinUK(userId: string): Promise<number> {
+    try {
+      const user = await this.getUser(userId);
+      if (!user.prInfo?.visaApprovalDate) {
+        return 0;
+      }
+      const totalDaysOnTrip = await this.getTotalDaysOnTrip(userId);
+      const visaArrivalDelta = await this.getVisaArrivalDelta(userId);
+      return Math.floor(totalDaysOnTrip+visaArrivalDelta);
+    } catch (error) {
+      console.error('Error getting total days not in UK:', error);
       return 0;
     }
   }
-  
 };
-
-
