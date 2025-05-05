@@ -31,7 +31,7 @@ export default function DaysStats() {
     return (
         <div className="space-y-1">
 
-            <div className="flex gap-">
+            <div className="flex gap-4">
                 <Card className="flex-1 border-none shadow-none">
                     <CardContent className="p-1">
                         <div className="flex items-center gap-3">
