@@ -93,8 +93,6 @@ export default function NewTripPage() {
         // Check residence requirements including the temporary trip
         const result = await residenceService.checkContinuousResidence(user.uid, tempTrip);
 
-        // Debug log to see what we're getting from the service
-        console.log('Residence check result:', result);
 
         setResidenceCheck({ 
           isValid: result.isValid, 
