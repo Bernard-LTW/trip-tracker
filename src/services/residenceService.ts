@@ -32,6 +32,7 @@ function toDate(dateStr: string): Date {
  * Calculates the number of days between two dates, inclusive
  */
 function countDaysBetween(start: Date, end: Date): number {
+  // Add 1 to include both start and end dates
   return Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 }
 
@@ -46,7 +47,8 @@ function getAbsenceDaysInWindow(trips: Trip[], windowStart: Date, windowEnd: Dat
     const periodStart = Math.max(windowStart.getTime(), visaStartDate.getTime());
     const periodEnd = Math.min(windowEnd.getTime(), firstEntryDate.getTime());
     if (periodEnd > periodStart) {
-      total += Math.floor((periodEnd - periodStart) / (1000 * 60 * 60 * 24)) + 1;
+      // Use countDaysBetween for consistency
+      total += countDaysBetween(new Date(periodStart), new Date(periodEnd)) + 1; // Subtract 1 to avoid double counting with trips
     }
   }
 

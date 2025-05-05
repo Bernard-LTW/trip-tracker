@@ -56,6 +56,7 @@ export default function ProfilePage() {
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             This app is based on UK immigration regulations but should be used with caution. Always verify calculations.
+            <Link href="https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-continuous-residence" target="_blank" className="text-blue-500">Read more (GOV.UK)</Link>
           </AlertDescription>
         </Alert>
       

@@ -64,7 +64,8 @@ export const userService = {
         if (isNaN(tripStartDate.getTime()) || isNaN(tripEndDate.getTime())) {
           return acc;
         }
-        const days = (tripEndDate.getTime() - tripStartDate.getTime()) / (1000 * 60 * 60 * 24);
+        // Add 1 to include both start and end dates
+        const days = Math.floor((tripEndDate.getTime() - tripStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         return acc + days;
       }, 0);
       return totalDays;
@@ -81,8 +82,9 @@ export const userService = {
         return 0;
       }
       const currentDate = new Date();
-      const daysSinceArrival = (currentDate.getTime() - arrivalDate.getTime()) / (1000 * 60 * 60 * 24);
-      return Math.floor(daysSinceArrival);
+      // Add 1 to include both start and end dates
+      const daysSinceArrival = Math.floor((currentDate.getTime() - arrivalDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      return daysSinceArrival;
     } catch (error) {
       console.error('Error getting days in UK since arrival:', error);
       return 0;
@@ -97,8 +99,9 @@ export const userService = {
       }
       const visaApprovalDate = new Date(user.prInfo.visaApprovalDate);
       const currentDate = new Date();
-      const daysSinceVisaApproval = (currentDate.getTime() - visaApprovalDate.getTime()) / (1000 * 60 * 60 * 24);
-      return Math.floor(daysSinceVisaApproval);
+      // Add 1 to include both start and end dates
+      const daysSinceVisaApproval = Math.floor((currentDate.getTime() - visaApprovalDate.getTime()) / (1000 * 60 * 60 * 24)) ;
+      return daysSinceVisaApproval;
     } catch (error) {
       console.error('Error getting days since visa approval:', error);
       return 0;
@@ -134,7 +137,8 @@ export const userService = {
       if (!arrivalDate) {
         return 0;
       }
-      return Math.floor((arrivalDate.getTime() - visaApprovalDate.getTime()) / (1000 * 60 * 60 * 24));
+      // Add 1 to include both start and end dates
+      return Math.floor((arrivalDate.getTime() - visaApprovalDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
     } catch (error) {
       console.error('Error getting visa arrival delta:', error);
       return 0;
