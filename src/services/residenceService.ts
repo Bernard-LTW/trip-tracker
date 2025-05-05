@@ -113,8 +113,10 @@ function findNextPossibleTripDate(
     const tripEndDate = addDays(testDate, tripLength - 1);
     
     while (current <= tripEndDate) {
+      // Create a window that is exactly 12 months before the current date
       const windowStart = new Date(current);
       windowStart.setFullYear(windowStart.getFullYear() - 1);
+      windowStart.setDate(windowStart.getDate() + 1); // Add one day to make it exactly 12 months
 
       if (windowStart < visaStartDate) {
         windowStart.setTime(visaStartDate.getTime());
@@ -172,8 +174,10 @@ function checkContinuousResidence(
   const adjustedMaxAbsence = maxAbsenceIn12Months - buffer;
 
   while (current <= qualifyingPeriodEnd) {
+    // Create a window that is exactly 12 months before the current date
     const windowStart = new Date(current);
     windowStart.setFullYear(windowStart.getFullYear() - 1);
+    windowStart.setDate(windowStart.getDate() + 1); // Add one day to make it exactly 12 months
 
     if (windowStart < visaStartDate) {
       windowStart.setTime(visaStartDate.getTime());
@@ -181,7 +185,10 @@ function checkContinuousResidence(
 
     const absenceDays = getAbsenceDaysInWindow(allTrips, windowStart, current, visaStartDate, firstEntryDate);
 
-    if (absenceDays > maxAbsenceDays) {
+    // Only update max absence period if this window represents a full 12-month period
+    // and has more absence days than our current maximum
+    const windowDays = countDaysBetween(windowStart, current);
+    if (absenceDays > maxAbsenceDays && (windowDays <= 366 && windowDays >= 365)) { // Account for leap years
       maxAbsenceDays = absenceDays;
       maxAbsenceStart = new Date(windowStart);
       maxAbsenceEnd = new Date(current);

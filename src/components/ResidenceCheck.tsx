@@ -79,9 +79,8 @@ export function ResidenceCheck({ userId }: ResidenceCheckProps) {
   const adjustedMaxDays = 180 - state.buffer;
 
   // Find the buffer label
-  const bufferLabel = Object.entries(Buffer).find(
-    ([_, value]) => value === state.buffer
-  )?.[0] ?? 'No Buffer';
+  const bufferLabel = Object.entries(Buffer)
+    .find(entry => entry[1] === state.buffer)?.[0] ?? 'No Buffer';
 
   return (
     <Card>

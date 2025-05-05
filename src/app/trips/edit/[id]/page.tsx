@@ -17,7 +17,6 @@ import { toast } from 'sonner';
 import { EmojiPicker } from '@/components/ui/emoji-picker';
 import { use } from 'react';
 import { isBefore, format } from 'date-fns';
-import { ValidatedDatePicker } from '@/components/ui/validated-date-picker';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   AlertDialog,
@@ -113,14 +112,16 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
       }
 
       try {
-        // Get user data
-        const userData = await userService.getUser(user.uid);
-        
         // Create a temporary trip with the current form data
         const tempTrip: Trip = {
           id,
           userId: user.uid,
-          ...formData,
+          title: formData.title,
+          description: formData.description,
+          country: formData.country,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+          emoji: formData.emoji,
           createdAt: Timestamp.now()
         };
         
@@ -140,7 +141,7 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
     }
 
     checkResidenceRequirements();
-  }, [user, id, formData.startDate, formData.endDate]);
+  }, [user, id, formData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -345,7 +346,7 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
                 <>
                   <CalendarIcon className="h-4 w-4" />
                   <AlertDescription>
-                    Pick your trip dates and we'll tell you if they comply with your residence requirements.
+                    Pick your trip dates and we&apos;ll tell you if they comply with your residence requirements.
                   </AlertDescription>
                 </>
               ) : residenceCheck.isValid ? (

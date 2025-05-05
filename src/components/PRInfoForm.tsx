@@ -118,7 +118,7 @@ export default function PRInfoForm({ initialData }: { initialData: UserPRInfo })
               </SelectContent>
             </Select>
             <p className="text-sm text-muted-foreground mt-2">
-              A safety buffer helps ensure you don't accidentally exceed absence limits.
+              A safety buffer helps ensure you don&apos;t accidentally exceed absence limits.
               The larger the buffer, the more conservative your trip planning will be.
             </p>
           </div>

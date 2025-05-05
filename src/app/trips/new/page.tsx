@@ -16,8 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeftIcon, PlusIcon, XIcon, AlertCircleIcon, CheckCircle2Icon, CalendarIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { EmojiPicker } from '@/components/ui/emoji-picker';
-import { isBefore, addDays, format } from 'date-fns';
-import { ValidatedDatePicker } from '@/components/ui/validated-date-picker';
+import { isBefore, format } from 'date-fns';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function NewTripPage() {
@@ -27,7 +26,7 @@ export default function NewTripPage() {
   const [error, setError] = useState<string | null>(null);
   const [firstEntryDate, setFirstEntryDate] = useState<Date | null>(null);
   const [showDescription, setShowDescription] = useState(false);
-  const [nextValidTripDate, setNextValidTripDate] = useState<Date | null>(null);
+  // const [nextValidTripDate, setNextValidTripDate] = useState<Date | null>(null);
 
   const [formData, setFormData] = useState<Omit<Trip, 'id' | 'userId' | 'createdAt'>>({
     title: '',
@@ -74,53 +73,38 @@ export default function NewTripPage() {
       }
 
       try {
-        // Get user data
-        const userData = await userService.getUser(user.uid);
-        
         // Create a temporary trip with the current form data
         const tempTrip: Trip = {
           id: 'temp',
           userId: user.uid,
-          ...formData,
+          title: formData.title,
+          description: formData.description,
+          country: formData.country,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+          emoji: formData.emoji,
           createdAt: Timestamp.now()
         };
         
         // Check residence requirements including the temporary trip
         const result = await residenceService.checkContinuousResidence(user.uid, tempTrip);
-        
-        if (!result.isValid) {
-          // Calculate days until we're under the limit
-          const maxAbsenceDays = 180 - userData.prInfo.buffer;
-          const currentAbsenceDays = result.maxAbsencePeriod.days;
-          const daysToWait = currentAbsenceDays - maxAbsenceDays + 1;
-          
-          // Add these days to the end date of the current trip
-          const endDate = new Date(formData.endDate);
-          const nextPossibleDate = addDays(endDate, Math.max(daysToWait, 1));
-          setResidenceCheck({ 
-            isValid: false, 
-            nextValidDate: nextPossibleDate,
-            qualifyingPeriodEnd: result.qualifyingPeriodEnd || null,
-            nextPossibleTrips: result.nextPossibleTrips
-          });
-        } else {
-          setResidenceCheck({ 
-            isValid: true, 
-            nextValidDate: null,
-            qualifyingPeriodEnd: result.qualifyingPeriodEnd || null,
-            nextPossibleTrips: result.nextPossibleTrips
-          });
-        }
 
         // Debug log to see what we're getting from the service
         console.log('Residence check result:', result);
+
+        setResidenceCheck({ 
+          isValid: result.isValid, 
+          nextValidDate: null,
+          qualifyingPeriodEnd: result.qualifyingPeriodEnd || null,
+          nextPossibleTrips: result.nextPossibleTrips
+        });
       } catch (error) {
         console.error('Error calculating next valid trip date:', error);
       }
     }
 
     calculateNextValidTripDate();
-  }, [user, formData.startDate, formData.endDate]);
+  }, [user, formData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -300,7 +284,7 @@ export default function NewTripPage() {
                 <>
                   <CalendarIcon className="h-4 w-4" />
                   <AlertDescription>
-                    Pick your trip dates and we'll tell you if they comply with your residence requirements.
+                    Pick your trip dates and we&apos;ll tell you if they comply with your residence requirements.
                   </AlertDescription>
                 </>
               ) : residenceCheck.isValid ? (
