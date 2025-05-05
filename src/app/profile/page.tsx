@@ -3,9 +3,10 @@
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { userService } from "@/services/userService";
@@ -42,8 +43,9 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="h-full flex items-center justify-center">
+      <div className="h-full flex flex-col items-center justify-center">
         <p className="text-lg">Please sign in to view your profile.</p>
+        <Button onClick={() => router.push('/')}>Sign in</Button>
       </div>
     );
   }
@@ -51,10 +53,13 @@ export default function ProfilePage() {
   return (
     <div className="h-full p-4 sm:p-8 overflow-y-auto">
       <div className="w-full max-w-[min(600px,calc(100vw-2rem))] mx-auto space-y-4">
-        <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Home
-        </Link>
+        <Alert variant="destructive" className="mb-6">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            This app is based on UK immigration regulations but should be used with caution. Always verify calculations.
+            <Link href="https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-continuous-residence" target="_blank" className="text-blue-500">Read more here (GOV.UK)</Link>
+          </AlertDescription>
+        </Alert>
       
         <Card className="border-none shadow-none">
           <CardHeader className="flex flex-row items-center gap-4">
@@ -73,7 +78,7 @@ export default function ProfilePage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <h2 className="text-lg font-medium">Account Details</h2>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Display Name</p>
@@ -83,7 +88,7 @@ export default function ProfilePage() {
                 <p className="text-sm text-muted-foreground">Email</p>
                 <p className="font-medium">{user.email}</p>
               </div>
-            </div>
+            </div> */}
 
             <div className="space-y-4">
               <h2 className="text-lg font-medium">App Options</h2>

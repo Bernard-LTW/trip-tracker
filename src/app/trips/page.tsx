@@ -23,7 +23,7 @@ export default function TripsPage() {
 
   useEffect(() => {
     async function loadTrips() {
-      if (!user) return;
+      if (!user) return router.push('/');
       
       try {
         setLoading(true);
@@ -38,7 +38,7 @@ export default function TripsPage() {
     }
 
     loadTrips();
-  }, [user]);
+  }, [user, router]);
 
   const now = new Date();
 

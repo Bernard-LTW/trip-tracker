@@ -45,10 +45,10 @@ export default function CheckIfOnTrip() {
 
     return (
         <Card className={cn(
-            "border",
+            "border py-4",
             isOnTrip ? "bg-green-500/10 dark:bg-green-500/20" : "bg-muted"
         )}>
-            <CardContent className="p-4">
+            <CardContent className="px-4">
                 <div className="flex items-center gap-3">
                     <div className={cn(
                         "p-2 rounded-full",

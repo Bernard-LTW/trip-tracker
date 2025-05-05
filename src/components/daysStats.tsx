@@ -8,14 +8,13 @@ export default function DaysStats() {
     const { user } = useAuth();
     const [daysInUK, setDaysInUK] = useState(0);
     const [daysAbroad, setDaysAbroad] = useState(0);
-    // const [arrivalDate, setArrivalDate] = useState<string>("");
 
     useEffect(() => {
         async function updateStats() {
             if (!user) return;
             try {
-                const ukDays = await userService.getDaysSinceArrivalinUK(user.uid);
-                const abroadDays = await userService.getTotalDaysOnTrip(user.uid);
+                const ukDays = await userService.getDaysSinceVisaApprovalinUK(user.uid);
+                const abroadDays = await userService.getTotalnotinUK(user.uid);
                 // const date = await userService.getArrivalDate(user.uid);
                 setDaysInUK(Math.round(ukDays));
                 setDaysAbroad(Math.round(abroadDays));
@@ -31,7 +30,8 @@ export default function DaysStats() {
 
     return (
         <div className="space-y-1">
-            <div className="flex gap-2">
+
+            <div className="flex gap-4">
                 <Card className="flex-1 border-none shadow-none">
                     <CardContent className="p-1">
                         <div className="flex items-center gap-3">

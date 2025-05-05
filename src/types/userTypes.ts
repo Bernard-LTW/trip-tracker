@@ -1,10 +1,18 @@
 import { Timestamp } from 'firebase/firestore';
 
+export const Buffer = {
+  'No Buffer': 0,
+  'Little': 7,
+  'Cautious': 14,
+  'Safe': 30
+} as const;
+
+export type Buffer = typeof Buffer[keyof typeof Buffer];
+
 export interface UserPRInfo {
+  visaApprovalDate: string; //ISO date string format (YYYY-MM-DD)
   firstEntryToUK: string; //ISO date string format (YYYY-MM-DD)
-  visaType: string;
-  indefiniteLeaveDate: string | null;
-  notes: string;
+  buffer: Buffer;
 }
 
 export interface User {

@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/context/AuthContext";
 import SignInSection from "@/components/SignInSection";
-import ProfileSection from "@/components/ProfileSection";
+import ProfileSection from "@/components/Dashboard";
 
 export default function Home() {
   const { user, loading, signInWithGoogle } = useAuth();
@@ -16,8 +16,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex items-start justify-center p-8">
-      <main className="flex flex-col items-center gap-8 pt-4">
+    <div className="min-h-screen flex flex-col items-center overflow-auto">
+      <main className="w-full max-w-[min(600px,100vw)] flex-1 p-4">
         {!user ? (
           <SignInSection onSignIn={signInWithGoogle} />
         ) : (

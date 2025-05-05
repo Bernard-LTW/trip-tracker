@@ -1,31 +1,41 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { createOrUpdateUser, UserPRInfo } from "@/lib/user";
+import { createOrUpdateUser } from "@/lib/user";
+import { UserPRInfo, Buffer } from "@/types/userTypes";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-
-const VISA_TYPES = [
-  "Tier 4 Student",
-  "Tier 2 General",
-  "Skilled Worker",
-  "Graduate",
-  "Family",
-  "Other"
-];
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function PRInfoForm({ initialData }: { initialData: UserPRInfo }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<UserPRInfo>(initialData);
+  const [formData, setFormData] = useState<UserPRInfo>({
+    ...initialData,
+    buffer: initialData.buffer ?? 0
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    // Validate dates
+    if (formData.firstEntryToUK && formData.visaApprovalDate) {
+      const entryDate = new Date(formData.firstEntryToUK);
+      const visaDate = new Date(formData.visaApprovalDate);
+      if (entryDate < visaDate) {
+        toast.error("First entry date cannot be earlier than visa approval date");
+        return;
+      }
+    }
 
     setLoading(true);
     try {
@@ -49,57 +59,68 @@ export default function PRInfoForm({ initialData }: { initialData: UserPRInfo })
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
+            <Label htmlFor="visaApprovalDate">Visa Approval Date</Label>
+            <Input
+              id="visaApprovalDate"
+              type="date"
+              value={formData.visaApprovalDate}
+              onChange={(e) => setFormData(prev => ({ ...prev, visaApprovalDate: e.target.value }))}
+              required
+            />
+            <p className="text-sm text-muted-foreground mt-1">
+              This date is usually shown on the email you received from the Home Office.
+            </p>
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="firstEntryToUK">First Entry to UK</Label>
             <Input
               id="firstEntryToUK"
               type="date"
               value={formData.firstEntryToUK}
-              onChange={(e) => setFormData(prev => ({ ...prev, firstEntryToUK: e.target.value }))}
+              min={formData.visaApprovalDate}
+              onChange={(e) => {
+                const newDate = e.target.value;
+                if (!formData.visaApprovalDate || new Date(newDate) >= new Date(formData.visaApprovalDate)) {
+                  setFormData(prev => ({ ...prev, firstEntryToUK: newDate }));
+                } else {
+                  toast.error("First entry date cannot be earlier than visa approval date");
+                }
+              }}
               required
             />
+            <p className="text-sm text-muted-foreground mt-1">
+              Check your passport for stamps or flight tickets to find this date.
+              {formData.visaApprovalDate && (
+                <> Must be on or after {new Date(formData.visaApprovalDate).toLocaleDateString()}</>
+              )}
+            </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="visaType">Visa Type</Label>
+            <Label htmlFor="buffer">Safety Buffer</Label>
             <Select
-              value={formData.visaType}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, visaType: value }))}
+              value={formData.buffer.toString()}
+              onValueChange={(value) => setFormData(prev => ({ 
+                ...prev, 
+                buffer: Number(value) as Buffer 
+              }))}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select visa type" />
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a safety buffer" />
               </SelectTrigger>
               <SelectContent>
-                {VISA_TYPES.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
+                {Object.entries(Buffer).map(([label, value]) => (
+                  <SelectItem key={value} value={value.toString()}>
+                    {label} ({value} days)
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="indefiniteLeaveDate">Indefinite Leave Date (if applicable)</Label>
-            <Input
-              id="indefiniteLeaveDate"
-              type="date"
-              value={formData.indefiniteLeaveDate || ""}
-              onChange={(e) => setFormData(prev => ({ 
-                ...prev, 
-                indefiniteLeaveDate: e.target.value || null 
-              }))}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="notes">Additional Notes</Label>
-            <Textarea
-              id="notes"
-              value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-              placeholder="Enter any additional notes about your immigration status..."
-              className="min-h-[100px]"
-            />
+            <p className="text-sm text-muted-foreground mt-2">
+              A safety buffer helps ensure you don&apos;t accidentally exceed absence limits.
+              The larger the buffer, the more conservative your trip planning will be.
+            </p>
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
