@@ -27,6 +27,16 @@ export default function PRInfoForm({ initialData }: { initialData: UserPRInfo })
     e.preventDefault();
     if (!user) return;
 
+    // Validate dates
+    if (formData.firstEntryToUK && formData.visaApprovalDate) {
+      const entryDate = new Date(formData.firstEntryToUK);
+      const visaDate = new Date(formData.visaApprovalDate);
+      if (entryDate < visaDate) {
+        toast.error("First entry date cannot be earlier than visa approval date");
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       await createOrUpdateUser(user.uid, {
@@ -57,6 +67,9 @@ export default function PRInfoForm({ initialData }: { initialData: UserPRInfo })
               onChange={(e) => setFormData(prev => ({ ...prev, visaApprovalDate: e.target.value }))}
               required
             />
+            <p className="text-sm text-muted-foreground mt-1">
+              This date is usually shown on the email you received from the Home Office.
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -65,9 +78,23 @@ export default function PRInfoForm({ initialData }: { initialData: UserPRInfo })
               id="firstEntryToUK"
               type="date"
               value={formData.firstEntryToUK}
-              onChange={(e) => setFormData(prev => ({ ...prev, firstEntryToUK: e.target.value }))}
+              min={formData.visaApprovalDate}
+              onChange={(e) => {
+                const newDate = e.target.value;
+                if (!formData.visaApprovalDate || new Date(newDate) >= new Date(formData.visaApprovalDate)) {
+                  setFormData(prev => ({ ...prev, firstEntryToUK: newDate }));
+                } else {
+                  toast.error("First entry date cannot be earlier than visa approval date");
+                }
+              }}
               required
             />
+            <p className="text-sm text-muted-foreground mt-1">
+              Check your passport for stamps or flight tickets to find this date.
+              {formData.visaApprovalDate && (
+                <> Must be on or after {new Date(formData.visaApprovalDate).toLocaleDateString()}</>
+              )}
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -90,6 +117,10 @@ export default function PRInfoForm({ initialData }: { initialData: UserPRInfo })
                 ))}
               </SelectContent>
             </Select>
+            <p className="text-sm text-muted-foreground mt-2">
+              A safety buffer helps ensure you don't accidentally exceed absence limits.
+              The larger the buffer, the more conservative your trip planning will be.
+            </p>
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>

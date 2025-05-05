@@ -156,16 +156,29 @@ export default function PROnboarding({ onComplete }: PROnboardingProps) {
           )}
 
           {step.id === 'firstEntry' && (
-            <div className="space-y-4">
+            <div className="space-y-4 mt-4">
               <div className="space-y-2">
                 <Label htmlFor="firstEntryToUK">First Entry Date</Label>
                 <Input
                   id="firstEntryToUK"
                   type="date"
                   value={formData.firstEntryToUK}
-                  onChange={(e) => setFormData(prev => ({ ...prev, firstEntryToUK: e.target.value }))}
+                  min={formData.visaApprovalDate}
+                  onChange={(e) => {
+                    const newDate = e.target.value;
+                    if (!formData.visaApprovalDate || new Date(newDate) >= new Date(formData.visaApprovalDate)) {
+                      setFormData(prev => ({ ...prev, firstEntryToUK: newDate }));
+                    } else {
+                      toast.error("First entry date cannot be earlier than visa approval date");
+                    }
+                  }}
                   required
                 />
+                {formData.visaApprovalDate && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Must be on or after {new Date(formData.visaApprovalDate).toLocaleDateString()}
+                  </p>
+                )}
               </div>
             </div>
           )}

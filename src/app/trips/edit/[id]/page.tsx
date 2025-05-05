@@ -302,36 +302,37 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Start Date</Label>
-                <ValidatedDatePicker
-                  date={formData.startDate ? new Date(formData.startDate) : undefined}
-                  onSelect={(date) => {
-                    if (date && firstEntryDate && isBefore(date, firstEntryDate)) {
+                <Input
+                  type="date"
+                  value={formData.startDate ? formData.startDate.split('T')[0] : ''}
+                  onChange={(e) => {
+                    const date = e.target.value;
+                    if (date && firstEntryDate && isBefore(new Date(date), firstEntryDate)) {
                       toast.error('Trip start date cannot be before your first entry to the UK');
                       return;
                     }
-                    setFormData(prev => ({ 
-                      ...prev, 
-                      startDate: date ? date.toISOString() : '' 
+                    setFormData(prev => ({
+                      ...prev,
+                      startDate: date ? new Date(date).toISOString() : ''
                     }));
                   }}
-                  disabledDate={(date: Date) => firstEntryDate ? isBefore(date, firstEntryDate) : false}
+                  min={firstEntryDate ? format(firstEntryDate, 'yyyy-MM-dd') : undefined}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label>End Date</Label>
-                <ValidatedDatePicker
-                  date={formData.endDate ? new Date(formData.endDate) : undefined}
-                  onSelect={(date) => setFormData(prev => ({ 
-                    ...prev, 
-                    endDate: date ? date.toISOString() : '' 
-                  }))}
-                  defaultMonth={formData.startDate ? new Date(formData.startDate) : undefined}
-                  disabledDate={(date: Date) => {
-                    if (!formData.startDate || !firstEntryDate) return false;
-                    const startDate = new Date(formData.startDate);
-                    return isBefore(date, startDate) || isBefore(date, firstEntryDate);
+                <Input
+                  type="date"
+                  value={formData.endDate ? formData.endDate.split('T')[0] : ''}
+                  onChange={(e) => {
+                    const date = e.target.value;
+                    setFormData(prev => ({
+                      ...prev,
+                      endDate: date ? new Date(date).toISOString() : ''
+                    }));
                   }}
+                  min={formData.startDate ? formData.startDate.split('T')[0] : firstEntryDate ? format(firstEntryDate, 'yyyy-MM-dd') : undefined}
                 />
               </div>
             </div>
