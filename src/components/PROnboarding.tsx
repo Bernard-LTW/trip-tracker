@@ -27,13 +27,13 @@ const steps = [
   },
   {
     id: 'visaApproval',
-    title: 'Visa Approval Date',
-    description: 'When was your visa approved? This is the date shown on your visa vignette or BRP.'
+    title: 'When was your visa approved? ',
+    description: 'This date is usually shown on the email you received from the Home Office.'
   },
   {
     id: 'firstEntry',
-    title: 'First Entry to UK',
-    description: 'When did you first enter the UK on this visa? This starts your qualifying period.'
+    title: 'When did you first enter the UK on this visa?',
+    description: 'Check your passport for stamps or flight tickets to find this date.'
   },
   {
     id: 'buffer',
@@ -132,16 +132,16 @@ export default function PROnboarding({ onComplete }: PROnboardingProps) {
           <CardDescription>{step.description}</CardDescription>
         </CardHeader>
         <CardContent>
-          {step.id === 'welcome' && (
+          {/* {step.id === 'welcome' && (
             <div className="space-y-4">
               <p className="text-muted-foreground">
                 We'll help you track your time in and out of the UK to ensure you meet the residency requirements for permanent residence.
               </p>
             </div>
-          )}
+          )} */}
 
           {step.id === 'visaApproval' && (
-            <div className="space-y-4">
+            <div className="space-y-4 mt-4">
               <div className="space-y-2">
                 <Label htmlFor="visaApprovalDate">Visa Approval Date</Label>
                 <Input
@@ -200,14 +200,15 @@ export default function PROnboarding({ onComplete }: PROnboardingProps) {
             </div>
           )}
 
-          <div className="flex justify-between mt-6">
-            <Button
-              variant="outline"
-              onClick={handleBack}
-              disabled={currentStep === 0}
-            >
-              Back
-            </Button>
+          <div className="flex justify-end mt-6 gap-3">
+            {currentStep > 0 && (
+              <Button
+                variant="outline"
+                onClick={handleBack}
+              >
+                Back
+              </Button>
+            )}
             
             {currentStep === steps.length - 1 ? (
               <Button 
