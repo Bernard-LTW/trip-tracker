@@ -38,7 +38,7 @@ export default function TripsPage() {
     }
 
     loadTrips();
-  }, [user]);
+  }, [user, router]);
 
   const now = new Date();
 

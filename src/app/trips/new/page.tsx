@@ -67,9 +67,13 @@ export default function NewTripPage() {
 
   useEffect(() => {
     async function calculateNextValidTripDate() {
-      if (!user || !formData.startDate || !formData.endDate) {
-        setResidenceCheck({ isValid: true, nextValidDate: null, qualifyingPeriodEnd: null });
+      if (!user) {
         return router.push('/trips');
+      }
+      
+      if (!formData.startDate || !formData.endDate) {
+        setResidenceCheck({ isValid: true, nextValidDate: null, qualifyingPeriodEnd: null });
+        return;
       }
 
       try {
@@ -104,7 +108,7 @@ export default function NewTripPage() {
     }
 
     calculateNextValidTripDate();
-  }, [user, formData]);
+  }, [user, formData, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
