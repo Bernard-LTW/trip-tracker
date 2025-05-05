@@ -8,6 +8,7 @@ import {
 } from 'firebase/firestore';
 import { Trip } from '@/types/tripTypes';
 
+
 export const userService = {
   async getUser(userId: string): Promise<User> {
     const userRef = doc(collection(db, 'users'), userId);
@@ -87,22 +88,6 @@ export const userService = {
       return 0;
     }
   },
-
-  // async getDaysSinceArrivalinUK(userId: string): Promise<number> {
-  //   try {
-  //     const arrivalDate = await this.getArrivalDate(userId);
-  //     if (!arrivalDate) {
-  //       return 0;
-  //     }
-  //     const currentDate = new Date();
-  //     const totalDaysOnTrip = await this.getTotalDaysOnTrip(userId);
-  //     const daysSinceArrival = (currentDate.getTime() - arrivalDate.getTime()) / (1000 * 60 * 60 * 24) - totalDaysOnTrip;
-  //     return Math.floor(daysSinceArrival);
-  //   } catch (error) {
-  //     console.error('Error getting days in UK since arrival:', error);
-  //     return 0;
-  //   }
-  // },
   
   async getDaysSinceVisaApproval(userId: string): Promise<number> {
     try {
