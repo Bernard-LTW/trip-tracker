@@ -154,5 +154,10 @@ export const userService = {
       console.error('Error getting total days not in UK:', error);
       return 0;
     }
+  },
+
+  async hasPRinfo(userId: string): Promise<boolean> {
+    const user = await this.getUser(userId);
+    return user.prInfo !== null;
   }
 };

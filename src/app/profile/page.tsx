@@ -3,9 +3,10 @@
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { userService } from "@/services/userService";
@@ -51,10 +52,12 @@ export default function ProfilePage() {
   return (
     <div className="h-full p-4 sm:p-8 overflow-y-auto">
       <div className="w-full max-w-[min(600px,calc(100vw-2rem))] mx-auto space-y-4">
-        {/* <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Home
-        </Link> */}
+        <Alert variant="destructive" className="mb-6">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            This app is based on UK immigration regulations but should be used with caution. Always verify calculations.
+          </AlertDescription>
+        </Alert>
       
         <Card className="border-none shadow-none">
           <CardHeader className="flex flex-row items-center gap-4">

@@ -37,7 +37,7 @@ export default function UpcomingTrips() {
                 >
                     <div className="flex items-center gap-2">
                         <CalendarIcon className="h-5 w-5 text-blue-600" />
-                        <span className="font-medium">Upcoming Trips({upcomingTrips.length})</span>
+                        <span className="text-lg font-medium">Upcoming Trips({upcomingTrips.length})</span>
                     </div>
                     {isExpanded ? (
                         <ChevronUpIcon className="h-5 w-5 text-muted-foreground" />

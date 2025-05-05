@@ -14,22 +14,16 @@ export async function createOrUpdateUser(userId: string, userData: Partial<User>
       await setDoc(userRef, {
         ...userData,
         createdAt: Timestamp.now(),
-        prInfo: {
-          firstEntryToUK: '',
-          visaType: '',
-          indefiniteLeaveDate: null,
-          notes: '',
-          ...userData.prInfo
-        }
+        prInfo: userData.prInfo || null
       });
     } else {
       // Update existing user document
+      const existingData = userDoc.data();
       await setDoc(userRef, {
         ...userData,
-        prInfo: {
-          ...userDoc.data().prInfo,
-          ...userData.prInfo
-        }
+        prInfo: userData.prInfo === undefined 
+          ? existingData.prInfo 
+          : userData.prInfo
       }, { merge: true });
     }
     
