@@ -2,18 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { getUserData, UserData } from '@/lib/user';
+import { getUserData } from '@/lib/user';
+import { User } from '@/types/userTypes';
 import PRInfoForm from '@/components/PRInfoForm';
 import { Toaster } from 'sonner';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function EditProfilePage() {
   const { user } = useAuth();
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
   useEffect(() => {
     async function loadUserData() {
       if (!user) return;
@@ -33,8 +36,9 @@ export default function EditProfilePage() {
 
   if (!user) {
     return (
-      <div className="h-full flex items-center justify-center">
+      <div className="h-full flex flex-col items-center justify-center">
         <p className="text-lg">Please sign in to edit your profile.</p>
+        <Button onClick={() => router.push('/')}>Sign in</Button>
       </div>
     );
   }

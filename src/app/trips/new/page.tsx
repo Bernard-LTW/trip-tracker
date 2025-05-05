@@ -69,7 +69,7 @@ export default function NewTripPage() {
     async function calculateNextValidTripDate() {
       if (!user || !formData.startDate || !formData.endDate) {
         setResidenceCheck({ isValid: true, nextValidDate: null, qualifyingPeriodEnd: null });
-        return;
+        return router.push('/trips');
       }
 
       try {

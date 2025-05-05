@@ -43,8 +43,9 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="h-full flex items-center justify-center">
+      <div className="h-full flex flex-col items-center justify-center">
         <p className="text-lg">Please sign in to view your profile.</p>
+        <Button onClick={() => router.push('/')}>Sign in</Button>
       </div>
     );
   }
@@ -56,7 +57,7 @@ export default function ProfilePage() {
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             This app is based on UK immigration regulations but should be used with caution. Always verify calculations.
-            <Link href="https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-continuous-residence" target="_blank" className="text-blue-500">Read more (GOV.UK)</Link>
+            <Link href="https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-continuous-residence" target="_blank" className="text-blue-500">Read more here (GOV.UK)</Link>
           </AlertDescription>
         </Alert>
       

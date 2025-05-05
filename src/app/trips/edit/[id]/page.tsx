@@ -67,7 +67,7 @@ export default function EditTripPage({ params }: { params: Promise<{ id: string 
 
   useEffect(() => {
     async function loadData() {
-      if (!user) return;
+      if (!user) return router.push('/');
       
       try {
         setLoading(true);
