@@ -11,12 +11,12 @@ export default function OfflinePage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <WifiOff className="h-6 w-6" />
-            <span>You're Offline</span>
+            <span>You&apos;re Offline</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
-            It looks like you've lost your internet connection. Some features may be limited until you're back online.
+            It looks like you&apos;ve lost your internet connection. Some features may be limited until you&apos;re back online.
           </p>
           <div className="flex justify-center">
             <Button 
