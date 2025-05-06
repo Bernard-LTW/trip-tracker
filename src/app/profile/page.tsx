@@ -51,7 +51,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="h-full p-4 sm:p-8 overflow-y-auto">
+    <div className="h-full p-2 sm:p-2 overflow-y-auto">
       <div className="w-full max-w-[min(600px,calc(100vw-2rem))] mx-auto space-y-4">
         <Alert variant="destructive" className="mb-6">
           <AlertTriangle className="h-4 w-4" />
@@ -61,7 +61,7 @@ export default function ProfilePage() {
           </AlertDescription>
         </Alert>
       
-        <Card className="border-none shadow-none">
+        <Card className="border-none shadow-none bg-background px-0">
           <CardHeader className="flex flex-row items-center gap-4">
             {user.photoURL && (
               <Image

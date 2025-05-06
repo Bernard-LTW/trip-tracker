@@ -59,11 +59,11 @@ export default function EditProfilePage() {
           Back to Profile
         </Link>
         
-        <Card className="border-none shadow-none">
-          <CardHeader>
+        <Card className="border-none shadow-none bg-background px-0">
+          <CardHeader className="px-1">
             <h1 className="text-2xl font-semibold">Edit Profile</h1>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {userData && (
               <PRInfoForm initialData={userData.prInfo} />
             )}

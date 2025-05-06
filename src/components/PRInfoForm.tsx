@@ -53,10 +53,10 @@ export default function PRInfoForm({ initialData }: { initialData: UserPRInfo })
 
   return (
     <Card className="w-full max-w-2xl">
-      <CardHeader>
+      <CardHeader className="px-3">
         <CardTitle>PR Information</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-3">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="visaApprovalDate">Visa Approval Date</Label>
