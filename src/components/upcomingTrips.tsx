@@ -36,8 +36,8 @@ export default function UpcomingTrips() {
                     onClick={() => setIsExpanded(!isExpanded)}
                 >
                     <div className="flex items-center gap-2">
-                        <CalendarIcon className="h-5 w-5 text-blue-600" />
-                        <span className="text-lg font-medium">Upcoming Trips({upcomingTrips.length})</span>
+                        <CalendarIcon className="h-5 w-5" />
+                        <span className="text-lg font-medium">Upcoming Trips ({upcomingTrips.length})</span>
                     </div>
                     {isExpanded ? (
                         <ChevronUpIcon className="h-5 w-5 text-muted-foreground" />

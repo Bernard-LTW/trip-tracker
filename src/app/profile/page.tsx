@@ -51,7 +51,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="h-full px-1 py-2 sm:p-8 overflow-y-auto">
+    <div className="h-full p-4 sm:p-8 overflow-y-auto">
       <div className="w-full max-w-[min(600px,calc(100vw-2rem))] mx-auto space-y-4">
         <Alert variant="destructive" className="mb-6">
           <AlertTriangle className="h-4 w-4" />

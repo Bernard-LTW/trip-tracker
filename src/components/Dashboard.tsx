@@ -52,7 +52,7 @@ export default function ProfileSection({ user, isLoading = false }: ProfileSecti
             </Button>
           </Link>
         </CardHeader>
-        <CardContent className="space-y-4 pt-0">
+        <CardContent className="space-y-4 pt-0 px-3">
           <CheckIfOnTrip />
           <DaysStats />
           <ProgressBar />

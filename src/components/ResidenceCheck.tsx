@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { userService } from '@/services/userService';
 import { Buffer } from '@/types/userTypes';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Goal } from 'lucide-react';
 
 interface ResidenceCheckProps {
   userId: string;
@@ -89,12 +89,15 @@ export function ResidenceCheck({ userId }: ResidenceCheckProps) {
         className="w-full p-0 h-auto hover:bg-transparent"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <CardHeader className="w-full">
+        <CardHeader className="w-full px-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <CardTitle className="text-lg font-medium">
-                Continuous Residence Check
-              </CardTitle>
+            <div className="flex flex-col items-start gap-2">
+              <div className="flex items-center gap-2">
+                <Goal className="h-5 w-5" />
+                <CardTitle className="text-lg font-medium">
+                  Continuous Residence Check
+                </CardTitle>
+              </div>
               <Badge variant={isValid ? "default" : "destructive"}>
                 {isValid ? 'Valid' : 'Invalid'}
               </Badge>

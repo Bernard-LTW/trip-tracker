@@ -15,7 +15,7 @@ export default function ClientLayout({
 
   return (
     <div className="h-screen flex flex-col">
-      <main className="flex-1 overflow-hidden flex flex-col">
+      <main className={`flex-1 overflow-y-auto flex flex-col ${user && !isOnboarding ? 'pb-20' : ''}`}>
         {user ? (
           <PRInfoWrapper onOnboardingChange={setIsOnboarding}>
             {children}
