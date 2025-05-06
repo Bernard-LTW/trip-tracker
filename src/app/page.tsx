@@ -17,7 +17,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col items-center overflow-auto">
-      <main className="w-full max-w-[min(600px,100vw)] flex-1 p-4">
+      <main className="w-full max-w-[min(600px,100vw)] flex-1 px-1 py-2">
         {!user ? (
           <SignInSection onSignIn={signInWithGoogle} />
         ) : (

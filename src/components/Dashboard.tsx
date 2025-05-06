@@ -27,7 +27,7 @@ export default function ProfileSection({ user, isLoading = false }: ProfileSecti
 
   return (
     <div className="w-full space-y-4">
-      <Card className="border-none shadow-none">
+      <Card className="border-none shadow-none px-0">
         <CardHeader className="flex flex-row items-center gap-3 py-2">
           {user.photoURL && (
             <Image
