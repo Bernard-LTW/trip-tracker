@@ -49,7 +49,9 @@ const nextConfig = {
         pathname: "/a/**",
       },
     ],
-  }
+  },
+  // Empty Turbopack config to satisfy Next 16 when using a plugin (next-pwa) that adds webpack config
+  turbopack: {},
 };
 
 module.exports = withPWA(nextConfig);
