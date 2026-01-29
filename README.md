@@ -1,6 +1,6 @@
 # Trip Tracker
 
-A web application to help UK Permanent Residence (PR) holders track their time spent in and out of the UK. This tool helps you monitor your continuous residence requirements and stay compliant with UK immigration rules(Note: this is subject to change at any moment for different types of people).
+A web application to help UK Non-PR holders track their time spent in and out of the UK. This tool helps you monitor your continuous residence requirements and stay compliant with UK immigration rules(Note: this is subject to change at any moment for different types of visas).
 
 ## Features
 
