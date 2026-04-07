@@ -58,14 +58,26 @@ export const userService = {
   async getTotalDaysOnTrip(userId: string): Promise<number> {
     try {
       const trips = await tripService.getUserTrips(userId);
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
       const totalDays = trips.reduce((acc, trip) => {
         const tripStartDate = new Date(trip.startDate);
         const tripEndDate = new Date(trip.endDate);
         if (isNaN(tripStartDate.getTime()) || isNaN(tripEndDate.getTime())) {
           return acc;
         }
-        // Add 1 to include both start and end dates
-        const days = Math.floor((tripEndDate.getTime() - tripStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        // Ignore future trips entirely.
+        if (tripStartDate > today) {
+          return acc;
+        }
+
+        // For ongoing trips, only count days up to today.
+        const effectiveEndDate = tripEndDate > today ? today : tripEndDate;
+        // Add 1 to include both start and end dates.
+        const days = Math.floor((effectiveEndDate.getTime() - tripStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        if (days <= 0) {
+          return acc;
+        }
         return acc + days;
       }, 0);
       return totalDays;
