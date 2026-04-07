@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import ClientLayout from "./ClientLayout";
 import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "sonner";
+import PWAServiceWorkerRegistration from "@/components/PWAServiceWorkerRegistration";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -13,6 +14,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Trip Tracker",
   description: "Track your trips and stay compliant with UK PR requirements",
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({
@@ -32,6 +34,7 @@ export default function RootLayout({
         </AuthProvider>
         <Analytics />
         <Toaster />
+        <PWAServiceWorkerRegistration />
       </body>
     </html>
   );
